@@ -1,0 +1,18 @@
+{
+  "name": "AutoScrape Data Extractor",
+  "id_name": "autoscrape-extractor",
+  "category" : "Scrape",
+  "icon" : "transform",
+  "description" : "Extract structured data from HTML pages.",
+  "help_url":"modules/scrape/autoscrape-extractor",
+  "html_output": true,
+  "parameters": [
+    {
+      "name": "Hext template",
+      "placeholder": "Use tool on right and paste template here...",
+      "id_name": "hext_template",
+      "type": "string",
+      "multiline": true
+    }
+  ]
+}
