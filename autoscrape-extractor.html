@@ -4,13 +4,13 @@
     <meta charset="utf-8">
     <title>LCA Hext Extraction UI</title>
     <style>
-.-autoscrape-over {
+.autoscrape-over {
   border: 3px solid red;
 }
-.-autoscrape-selected {
+.autoscrape-selected {
   border: 3px solid lightgreen !important;
 }
-.-autoscrape-selected-parent {
+.autoscrape-selected-parent {
   padding: 3px !important;
   margin: 3px !important;
   border: 3px solid yellow !important;
@@ -50,11 +50,11 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
     </script>
 
     <script type="text/javascript">
-const selectedClass = "-autoscrape-selected";
-const selectedParentClass = "-autoscrape-selected-parent";
+const selectedClass = "autoscrape-selected";
+const selectedParentClass = "autoscrape-selected-parent";
 // NOTE: if overClass changes, change the regex replacement
 // on the HTML chunk below (bottom of runUI method)
-const overClass = "-autoscrape-over";
+const overClass = "autoscrape-over";
 // save our LCA HTML chunk here (HACK)
 let LCA = null;
 
@@ -214,7 +214,7 @@ const runUI = () => {
     // we have an LCA, grab the outerHTML and display the chunk
     else {
       // NOTE: if overClass changes, this needs to change
-      const chunk = lca.outerHTML.replace(/\s*-autoscrape-over\s*/, "");
+      const chunk = lca.outerHTML.replace(/\s*autoscrape-over\s*/, "");
       $("#lca-html").text(chunk).html();
       LCA = chunk;
     }
@@ -349,6 +349,10 @@ const html2hext = (html) => {
 let docIx = 0;
 
 const dataReady = (data) => {
+  if (!data || !data.html) {
+    console.log("TODO: hide this whole thing");
+    return;
+  }
   $("#complete").hide();
   $("#main").html("");
   $("#main").html(data.html[docIx++ % data.html.length]);
@@ -373,6 +377,7 @@ function startLoading(d) {
       return response.json()
     })
     .then((data) => {
+      console.log("json data", data);
       $("#prev").on("click", dataReady.bind(this, data));
       $("#next").on("click", dataReady.bind(this, data));
       return dataReady(data);
