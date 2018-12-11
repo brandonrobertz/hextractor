@@ -214,7 +214,7 @@ const runUI = () => {
     // we have an LCA, grab the outerHTML and display the chunk
     else {
       // NOTE: if overClass changes, this needs to change
-      const chunk = lca.outerHTML.replace(/\s*autoscrape-over\s*/, "");
+      const chunk = lca.outerHTML.replace(/\s*autoscrape-over\s*/, " ");
       $("#lca-html").text(chunk).html();
       LCA = chunk;
     }
