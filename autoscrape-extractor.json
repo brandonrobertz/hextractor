@@ -8,6 +8,11 @@
   "html_output": true,
   "parameters": [
     {
+      "name": "HTML Column",
+      "id_name" : "html_column",
+      "type": "column"
+    },
+    {
       "name": "Hext template",
       "placeholder": "Use tool on right and paste template here...",
       "id_name": "hext_template",

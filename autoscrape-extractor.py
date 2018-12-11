@@ -61,7 +61,10 @@ def extract_and_flatten(table, template, html_column="html"):
 def render(table, params):
     # TODO: allow users to select the source HTML column
     template = params.get("hext_template")
-    html_column = "html"
+    html_column = params.get("html_column")
+
+    if not html_column:
+        return "Select a HTML source column to extract data from."
 
     if not template:
         err_msg = (
