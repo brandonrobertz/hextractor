@@ -17,30 +17,46 @@
   outline-style: solid !important;
   outline-color: yellow !important;
 }
+
+#autoscrape-extractor-ui #autoscrape-controls {
+  position: fixed;
+  top: 0;
+  height: 50px;
+}
+
+#autoscrape-extractor-ui button {
+  display: inline-block;
+}
+
+#autoscrape-extractor-ui #hext-template {
+  margin-top: 10px;
+}
+
+#autoscrape-extractor-ui #main {
+  margin-top: 50px;
+}
+
+#autoscrape-extractor-ui #hext-template-copyable {
+  height: 50px;
+  width: 300px;
+}
+
+#hext-template .hidden {
+  visibility: hidden !important;
+}
     </style>
   </head>
 
   <body>
     <div id="autoscrape-extractor-ui">
-      <h1>Hext Template Builder UI</h1>
-      <p>
-      This tool lets you highlight a single record's data and build a extractor template for all the rest of the records on the page. To get started perform the following steps:
-      <ol>
-        <li>Load a HTML document by clicking one of the buttong</li>
-        <li>Find a single record in the page</li>
-        <li>On that record, highlight and click on the text you'd like to extract. Do this until all the text for the single record have been highlighted in green and the single record as a whole is highlighted in yellow.</li>
-        <li>When you have all the records highlighted in green, click "Create Template"</li>
-        <li>That Hext template can now be used to extract all matching records, using the htmlext tool</li>
-      </ol>
-      </p>
-      <button id="prev">Prev HTML Document</button>
-      <button id="next">Next HTML Document</button>
-      <h2>HTML Chunk</h2>
-      <div id="lca-html"></div>
-      <h2>Hext Template</h2>
-      <div id="hext-template"></div>
-      <button id="complete">Create Template</button>
-      <h2>Source HTML Document</h2>
+      <div id="autoscrape-controls">
+        <button id="prev">Prev HTML Document</button>
+        <button id="next">Next HTML Document</button>
+        <button id="complete">Create Template</button>
+        <div id="hext-template">
+          <textarea id="hext-template-copyable" class="hidden"></textarea>
+        </div>
+      </div>
       <div id="main"></div>
     </div>
 
@@ -160,8 +176,9 @@ const getLCA = (nodes) => {
  */
 const runUI = () => {
   // clear the chunk display
-  $("#lca-html").text("").html();
-  $("#hext-template").text("").html();
+  // $("#lca-html").text("").html();
+  $("#hext-template-copyable").val("");
+  $("#hext-template-copyable").addClass("hidden");
 
   // grab all HTML document's elements
   const els = $("#main").find("*");
@@ -214,7 +231,7 @@ const runUI = () => {
     else {
       // NOTE: if overClass changes, this needs to change
       const chunk = lca.outerHTML.replace(/\s*autoscrape-over\s*/, " ");
-      $("#lca-html").text(chunk).html();
+      // $("#lca-html").text(chunk).html();
       LCA = chunk;
     }
   });
@@ -359,7 +376,8 @@ const dataReady = (data) => {
     stopUI();
     const hext = html2hext(LCA.replace("\n", "").trim());
     console.log("Hext", hext);
-    $("#hext-template").text(hext).html();
+    $("#hext-template-copyable").val(hext);
+    $("#hext-template textarea").removeClass("hidden");
   });
 };
 
