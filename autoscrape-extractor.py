@@ -62,6 +62,7 @@ def render(table, params):
     # TODO: allow users to select the source HTML column
     template = params.get("hext_template")
     html_column = params.get("html_column")
+    has_template = True if template else False
 
     if not html_column:
         return "Select a HTML source column to extract data from."
@@ -73,8 +74,9 @@ def render(table, params):
         )
         htmls = table[html_column].tolist()
         cleaned = [ clean_html(html) for html in htmls ]
-        return (table, err_msg, {"html": cleaned})
+        embeddata = {"html": cleaned}
+        return (table, err_msg, embeddata)
 
     new_table = extract_and_flatten(table, template, html_column=html_column)
-    return new_table
+    return (new_table, '', {})
 
