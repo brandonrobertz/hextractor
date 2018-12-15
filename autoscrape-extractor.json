@@ -16,8 +16,7 @@
       "name": "Hext template",
       "placeholder": "Use tool on right and paste template here...",
       "id_name": "hext_template",
-      "type": "string",
-      "multiline": true
+      "type": "string"
     }
   ]
 }

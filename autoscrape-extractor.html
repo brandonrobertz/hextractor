@@ -348,6 +348,26 @@ const html2hext = (html) => {
   return output;
 };
 
+const resize = (size) => {
+  console.log("resizing", size);
+  window.parent.postMessage({
+    from: 'outputIframe',
+    type: 'resize',
+    wfModuleId: parseInt(/(\d+)\/output/.exec(String(window.location))[1], 10),
+    height: size,
+  }, window.location.origin)
+};
+
+const sendHextUpwards = (hext) => {
+  window.parent.postMessage({
+    from: 'outputIframe',
+    type: 'set-params',
+    params: {
+      hext_template: hext
+    },
+    wfModuleId: parseInt(/(\d+)\/output/.exec(String(window.location))[1], 10),
+  }, window.location.origin)
+};
 
 /**
  * TODO: remove iframe, link, style, script
@@ -378,23 +398,14 @@ const dataReady = (data) => {
     console.log("Hext", hext);
     $("#hext-template-copyable").val(hext);
     $("#hext-template textarea").removeClass("hidden");
+    sendHextUpwards(hext);
   });
 };
 
-function resize(size) {
-  console.log("resizing", size);
-  window.parent.postMessage({
-    from: 'outputIframe',
-    type: 'resize',
-    wfModuleId: parseInt(/(\d+)\/output/.exec(String(window.location))[1], 10),
-    height: size,
-  }, window.location.origin)
-}
-
-function startLoading(d) {
+const startLoading = (d) => {
   const url = String(window.location).replace(/\/output.*/, '/embeddata')
   fetch(url, { credentials: 'same-origin' })
-    .then(function(response) {
+    .then((response) => {
       if (!response.ok) {
         throw new Error('Invalid response code: ' + response.status)
       }
@@ -415,7 +426,7 @@ function startLoading(d) {
       }
     })
     .catch(console.error)
-}
+};
 
 window.addEventListener('hashchange', startLoading);
 startLoading();
