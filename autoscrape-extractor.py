@@ -1,19 +1,15 @@
 import re
 import hext
 import pandas as pd
+from lxml.html.clean import Cleaner
 
 
 def clean_html(html):
-    # TODO: replace this with something more robust like bleach or
-    # a custom html5lib tree walk and remove iframe, link, style, script,
-    # any on* events, etc
-    regex = "|".join([
-        "<script.*>.*</script>",
-        "<link[^>]*/>",
-        "<style.*>.*</style>",
-        "<iframe.*>.*</iframe>",
-    ])
-    return re.sub(regex, "", html.replace("\n", ""))
+    cleaner = Cleaner(
+        scripts=True, javascript=True, comments=True,
+        style=True, links=True, embedded=True
+    )
+    return cleaner.clean_html(html)
 
 
 def extract_json(template, html):
