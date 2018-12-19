@@ -385,6 +385,9 @@ const sendHextUpwards = (hext) => {
 let docIx = 0;
 
 const dataReady = (data) => {
+  if (!data.html) {
+    console.error("HTML document is blank.");
+  }
   console.log("dataReady", data);
   $("#complete").hide();
   $("#main").html("");
