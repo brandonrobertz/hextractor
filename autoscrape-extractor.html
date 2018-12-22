@@ -5,57 +5,81 @@
     <title>LCA Hext Extraction UI</title>
     <style>
 .autoscrape-over {
-  border: 3px solid red;
+  box-shadow: 0px 0px 0px 2px #FBAA6D;
 }
 .autoscrape-selected {
-  border: 3px solid lightgreen !important;
+  background-color: #86F3FF !important;
 }
 .autoscrape-selected-parent {
-  padding: 3px !important;
-  margin: 3px !important;
-  border: 3px solid yellow !important;
-  outline-style: solid !important;
-  outline-color: yellow !important;
+  box-shadow: 0px 0px 0px 2px #FBAA6D;
 }
 
-#autoscrape-extractor-ui #autoscrape-controls {
-  position: fixed;
-  top: 0;
+#autoscrape-extractor-ui {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+#autoscrape-controls {
+  margin-bottom: 10px;
   height: 50px;
 }
 
-#autoscrape-extractor-ui button {
-  display: inline-block;
+iframe#main {
+  position: absolute;
+  top: 60px;
+  width: 90%;
+  height: 85%;
+  border: 2px solid black;
+  margin: 0;
+  padding: 0;
 }
 
-#autoscrape-extractor-ui #hext-template {
-  margin-top: 10px;
+#autoscrape-controls button {
+  border-radius: 12px;
+  line-height: 2.2em;
+  width: 7em;
 }
 
-#autoscrape-extractor-ui #main {
-  margin-top: 50px;
+#autoscrape-controls #prev {
+  color: #FBAA6D;
+  background-color: white;
+  border: 1px solid #FBAA6D;
 }
 
-#autoscrape-extractor-ui #hext-template-copyable {
-  height: 50px;
-  width: 300px;
+#autoscrape-controls #next {
+  background-color: #FBAA6D;
+  color: white;
+  border: none;
 }
 
-#hext-template .hidden {
-  visibility: hidden !important;
+#autoscrape-controls #cancel {
+  background-color: white;
+  border: none;
 }
+
+#autoscrape-controls #complete {
+  color: #86F3FF;
+  background-color: white;
+  border: 1px solid #86F3FF;
+}
+
+#autoscrape-controls #current-url {
+  width: 50%;
+}
+
     </style>
   </head>
 
   <body>
     <div id="autoscrape-extractor-ui">
       <div id="autoscrape-controls">
-        <button id="prev">Prev HTML Document</button>
-        <button id="next">Next HTML Document</button>
-        <button id="complete">Create Template</button>
-        <div id="hext-template">
-          <textarea id="hext-template-copyable" class="hidden"></textarea>
-        </div>
+        <button id="prev">Previous</button>
+        <span id="current"></span> of <span id="total"></span>
+        <button id="next">Next</button>
+        <input style="display: none" id="current-url" name="current-url" type="text" readonly />
+        <button id="complete">▶</button>
+        <button id="cancel">Cancel</button>
       </div>
       <div id="main"></div>
     </div>
@@ -72,7 +96,104 @@ const selectedParentClass = "autoscrape-selected-parent";
 const overClass = "autoscrape-over";
 // save our LCA HTML chunk here (HACK)
 let LCA = null;
+let docIx = -1;
 
+/**
+ * Convert an HTML chunk, with selected classes attached, into
+ * a hext template where the selected nodes are extracted.
+ */
+const html2hext = (html) => {
+  console.log("html2hext", html);
+  const parsed = $.parseHTML(html);
+  console.log("parsed", parsed);
+  if (parsed.length !== 1) {
+    console.error("Cannot build a Hext template without a single root node");
+    return;
+  }
+  const root = parsed[0];
+
+  let output = "";
+
+  /**
+   * Recursive plan:
+   * 1) check if element has selected class
+   *   a) yes: build a @text:COL[N], href if a, src if img
+   * 2) remove all attributes from element
+   * 3) check for children nodes
+   *   a) yes:
+   *     i) write opening tag w/ optional extractor
+   *     ii) recurse into children node in a loop
+   *     iii) write closing tag
+   *   b) no: write full tag w/ optional extractor
+   */
+  let colN = 1;
+  const transform = (node) => {
+    if (!node) {
+      console.error("No node", node);
+      return;
+    }
+    console.log("transform node", node, "output", output);
+    window.N = node;
+    // build selector
+    let selectors = [];
+    if (node.classList.contains(selectedClass)) {
+      selectors.push(`@text:COLUMN-${colN++}`);
+      switch (node.tagName) {
+        case "IMG":
+          if (node.getAttribute("src")) {
+            selectors.push(`src:COLUMN-${colN++}`);
+          }
+          break;
+        case "A":
+          if (node.getAttribute("href")) {
+            selectors.push(`href:COLUMN-${colN++}`);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    const selectorStr = selectors.join(" ");
+
+    // remove attributes
+    for (let i in node.attributes) {
+      if (node.hasOwnProperty(i)) {
+        const name = node.attributes[i].name;
+        console.log("remove attrib", name);
+        node.removeAttribute(name);
+      }
+    }
+
+    console.log("selectors", selectors, "tag", node.tagName);
+
+    let children = node.children;
+    console.log("children", children);
+    if (children.length === 0) {
+      // write opening & closing tag w/ selectors
+      output += `<${node.tagName} ${selectorStr} />`;
+      console.log("no children. output", output);
+    }
+    else {
+      // write opening tag w/ selectors
+      output += `<${node.tagName} ${selectorStr}>`;
+      console.log("children. output", output);
+      for (const i in children) {
+        if (children.hasOwnProperty(i)) {
+          const child = children[i];
+          console.log("child", child);
+          transform(child, output);
+        }
+      }
+      // write closing tag
+      output += `</${node.tagName}>`;
+    }
+
+  };
+
+  transform(root);
+  return output;
+};
 /**
  * Get the absolute depth of a element, from its target
  * property. This doesn't differentiate between equal depth
@@ -237,6 +358,26 @@ const runUI = () => {
   });
 };
 
+const makeid = (n) => {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < n; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+};
+
+const markAll = () => {
+  $('*').contents().filter(function() {
+    return this.nodeType == 3;
+  }).each(function(){
+    // map ID to original text
+    this.textContent = makeid(32);
+  });
+};
+
 /**
  * Cancel all handlers and freeze the HTML chunk.
  */
@@ -249,103 +390,6 @@ const stopUI = () => {
     e.stopPropagation();
   });
   $("#complete").hide();
-};
-
-/**
- * Convert an HTML chunk, with selected classes attached, into
- * a hext template where the selected nodes are extracted.
- */
-const html2hext = (html) => {
-  console.log("html2hext", html);
-  const parsed = $.parseHTML(html);
-  console.log("parsed", parsed);
-  if (parsed.length !== 1) {
-    console.error("Cannot build a Hext template without a single root node");
-    return;
-  }
-  const root = parsed[0];
-
-  let output = "";
-
-  /**
-   * Recursive plan:
-   * 1) check if element has selected class
-   *   a) yes: build a @text:COL[N], href if a, src if img
-   * 2) remove all attributes from element
-   * 3) check for children nodes
-   *   a) yes:
-   *     i) write opening tag w/ optional extractor
-   *     ii) recurse into children node in a loop
-   *     iii) write closing tag
-   *   b) no: write full tag w/ optional extractor
-   */
-  let colN = 1;
-  const transform = (node) => {
-    if (!node) {
-      console.error("No node", node);
-      return;
-    }
-    console.log("transform node", node, "output", output);
-    window.N = node;
-    // build selector
-    let selectors = [];
-    if (node.classList.contains(selectedClass)) {
-      selectors.push(`@text:COLUMN-${colN++}`);
-      switch (node.tagName) {
-        case "IMG":
-          if (node.getAttribute("src")) {
-            selectors.push(`src:COLUMN-${colN++}`);
-          }
-          break;
-        case "A":
-          if (node.getAttribute("href")) {
-            selectors.push(`href:COLUMN-${colN++}`);
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
-    const selectorStr = selectors.join(" ");
-
-    // remove attributes
-    for (let i in node.attributes) {
-      if (node.hasOwnProperty(i)) {
-        const name = node.attributes[i].name;
-        console.log("remove attrib", name);
-        node.removeAttribute(name);
-      }
-    }
-
-    console.log("selectors", selectors, "tag", node.tagName);
-
-    let children = node.children;
-    console.log("children", children);
-    if (children.length === 0) {
-      // write opening & closing tag w/ selectors
-      output += `<${node.tagName} ${selectorStr} />`;
-      console.log("no children. output", output);
-    }
-    else {
-      // write opening tag w/ selectors
-      output += `<${node.tagName} ${selectorStr}>`;
-      console.log("children. output", output);
-      for (const i in children) {
-        if (children.hasOwnProperty(i)) {
-          const child = children[i];
-          console.log("child", child);
-          transform(child, output);
-        }
-      }
-      // write closing tag
-      output += `</${node.tagName}>`;
-    }
-
-  };
-
-  transform(root);
-  return output;
 };
 
 const resize = (size) => {
@@ -382,16 +426,19 @@ const sendHextUpwards = (hext) => {
  * w.r.t. loading arbitarty HTML and rendering it.
  */
 
-let docIx = 0;
-
 const dataReady = (data) => {
   if (!data.html) {
     console.error("HTML document is blank.");
   }
   console.log("dataReady", data);
   $("#complete").hide();
-  $("#main").html("");
-  $("#main").html(data.html[docIx++ % data.html.length]);
+  // increment document number, update display
+  docIx = ++docIx % data.html.length;
+  $("#current").text(docIx + 1);
+  $("#total").text(data.html.length);
+
+  $("#main").html(data.html[docIx]);
+
   $("#complete").show();
   runUI();
   $("#complete").on("click", () => {
