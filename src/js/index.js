@@ -157,6 +157,12 @@ const dataReady = (data) => {
     $("#hext-template textarea").removeClass("hidden");
     sendHextUpwards(hext);
   });
+  $("#cancel").on("click", () => {
+    stopUI();
+    LCA = null;
+    docIx = -1;
+    runUI();
+  });
 };
 
 const startLoading = (d) => {
