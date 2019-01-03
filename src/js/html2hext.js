@@ -1,11 +1,11 @@
+import $ from 'jquery';
+
 /**
  * Convert an HTML chunk, with selected classes attached, into
  * a hext template where the selected nodes are extracted.
  */
 const html2hext = (html) => {
-  console.log("html2hext", html);
   const parsed = $.parseHTML(html);
-  console.log("parsed", parsed);
   if (parsed.length !== 1) {
     console.error("Cannot build a Hext template without a single root node");
     return;
@@ -32,7 +32,6 @@ const html2hext = (html) => {
       console.error("No node", node);
       return;
     }
-    console.log("transform node", node, "output", output);
     window.N = node;
     // build selector
     let selectors = [];
@@ -60,28 +59,21 @@ const html2hext = (html) => {
     for (let i in node.attributes) {
       if (node.hasOwnProperty(i)) {
         const name = node.attributes[i].name;
-        console.log("remove attrib", name);
         node.removeAttribute(name);
       }
     }
 
-    console.log("selectors", selectors, "tag", node.tagName);
-
     let children = node.children;
-    console.log("children", children);
     if (children.length === 0) {
       // write opening & closing tag w/ selectors
       output += `<${node.tagName} ${selectorStr} />`;
-      console.log("no children. output", output);
     }
     else {
       // write opening tag w/ selectors
       output += `<${node.tagName} ${selectorStr}>`;
-      console.log("children. output", output);
       for (const i in children) {
         if (children.hasOwnProperty(i)) {
           const child = children[i];
-          console.log("child", child);
           transform(child, output);
         }
       }
@@ -94,3 +86,5 @@ const html2hext = (html) => {
   transform(root);
   return output;
 };
+
+export default html2hext;

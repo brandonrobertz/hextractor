@@ -1,8 +1,15 @@
+import $ from 'jquery';
+import findLCA from 'js/lca';
+import html2hext from 'js/html2hext';
+
+let LCA = null;
+let docIx = -1;
+
 /**
  * Set up the mouse over and clicking functionality
  * along with the highlighting of the LCA.
  */
-const runUI = () => {
+export const runUI = () => {
   // clear the chunk display
   // $("#lca-html").text("").html();
   $("#hext-template-copyable").val("");
@@ -44,7 +51,7 @@ const runUI = () => {
     }
 
     // highlight parent element if we have some nodes
-    const lca = getLCA(selectedEls);
+    const lca = findLCA(selectedEls);
     $("*").removeClass(selectedParentClass);
     $(lca).addClass(selectedParentClass);
 
@@ -100,7 +107,6 @@ const stopUI = () => {
 };
 
 const resize = (size) => {
-  console.log("resizing", size);
   window.parent.postMessage({
     from: 'outputIframe',
     type: 'resize',
@@ -132,12 +138,10 @@ const sendHextUpwards = (hext) => {
  * need to think about potential security problems here
  * w.r.t. loading arbitarty HTML and rendering it.
  */
-
 const dataReady = (data) => {
   if (!data.html) {
     console.error("HTML document is blank.");
   }
-  console.log("dataReady", data);
   $("#complete").hide();
   // increment document number, update display
   docIx = ++docIx % data.html.length;
@@ -152,7 +156,6 @@ const dataReady = (data) => {
     $("#complete").hide();
     stopUI();
     const hext = html2hext(LCA.replace("\n", "").trim());
-    console.log("Hext", hext);
     $("#hext-template-copyable").val(hext);
     $("#hext-template textarea").removeClass("hidden");
     sendHextUpwards(hext);
@@ -165,7 +168,7 @@ const dataReady = (data) => {
   });
 };
 
-const startLoading = (d) => {
+export const startLoading = (d) => {
   const url = String(window.location).replace(/\/output.*/, '/embeddata')
   fetch(url, { credentials: 'same-origin' })
     .then((response) => {
@@ -175,13 +178,10 @@ const startLoading = (d) => {
       return response.json()
     })
     .then((data) => {
-      console.log("data", data);
       if (!data.html) {
-        console.log("Hiding this whole thing");
         resize(0);
       }
       else {
-        console.log("json data", data);
         $("#prev").on("click", dataReady.bind(this, data));
         $("#next").on("click", dataReady.bind(this, data));
         resize(500);
