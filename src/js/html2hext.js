@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import { selectedClass } from 'js/constants';
+
 /**
  * Convert an HTML chunk, with selected classes attached, into
  * a hext template where the selected nodes are extracted.

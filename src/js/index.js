@@ -1,6 +1,11 @@
 import $ from 'jquery';
+
 import findLCA from 'js/lca';
 import html2hext from 'js/html2hext';
+import {
+  selectedClass, selectedParentClass,
+  overClass
+} from 'js/constants';
 
 let LCA = null;
 let docIx = -1;
