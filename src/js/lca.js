@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 /**
  * Get the absolute depth of a element, from its target
  * property. This doesn't differentiate between equal depth

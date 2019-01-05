@@ -1,5 +1,25 @@
-export const selectedClass = "autoscrape-selected";
-export const selectedParentClass = "autoscrape-selected-parent";
-// NOTE: if overClass changes, change the regex replacement
-// on the HTML chunk below (bottom of runUI method)
-export const overClass = "autoscrape-over";
+const constants = {
+  selectedClass: "autoscrape-selected",
+  selectedParentClass: "autoscrape-selected-parent",
+  overClass: "autoscrape-over",
+
+  // main wrapper where we drop the document
+  docAreaId: "#autoscrape-doc-area",
+
+  // AutoScrape directory loader
+  directoryLoaderId: "#directory-loader",
+  directorySelectorId: "#directory-selector",
+
+  // elements to store meta information
+  currentNumberId: "#current-number",
+  totalNumberId: "#total-number",
+  currentDocNameId: "#current-doc-name",
+
+  // buttons for changing, canceling, etc
+  previousDocumentId: "#prev-btn",
+  nextDocumentId: "#next-btn",
+  completeSelectionId: "#complete-btn",
+  cancelSelectionId: "#cancel-btn",
+}
+
+export default constants;

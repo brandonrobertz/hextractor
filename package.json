@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production",
+    "watch": "webpack --watch --mode=development"
   },
   "repository": {
     "type": "git",
@@ -18,10 +19,14 @@
   },
   "homepage": "https://github.com/brandonrobertz/autoscrape-extractor-workbench#readme",
   "devDependencies": {
+    "css-loader": "^2.1.0",
+    "html-webpack-inline-source-plugin": "^1.0.0-beta.2",
+    "html-webpack-plugin": "^4.0.0-beta.5",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"
   },
   "dependencies": {
+    "datatransfer-files-promise": "^1.2.0",
     "jquery": "^2.2.4"
   }
 }

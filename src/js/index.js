@@ -1,11 +1,91 @@
 import $ from 'jquery';
 
+import { getFilesFromDataTransferItems } from 'datatransfer-files-promise';
+
 import findLCA from 'js/lca';
 import html2hext from 'js/html2hext';
-import {
-  selectedClass, selectedParentClass,
-  overClass
-} from 'js/constants';
+import constants from 'js/constants';
+
+class Extractor {
+  constructor(documents) {
+    this.documents = documents;
+    this.LCA = null;
+    this.docIx = 0;
+  }
+
+  readLocalFiles(files) {
+    const promises = files.map(file => {
+      return new Promise((res, rej) => {
+        const filepath = file.filepath;
+        const start = 0;
+        const stop = file.size - 1;
+        const blob = file.slice(start, stop + 1);
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+          if (e.target.readyState == 2) { // DONE
+            res({
+              "data": e.target.result,
+              "name": filepath,
+            });
+          }
+        };
+        reader.readAsText(blob);
+      });
+    });
+    return Promise.all(promises);
+  }
+
+  showDirectoryLoader() {
+    $(constants.directoryLoaderId).show();
+    const dropArea = document.querySelector(constants.directorySelectorId);
+    dropArea.addEventListener('drop', event => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      const items = event.dataTransfer.items;
+      getFilesFromDataTransferItems(items)
+        .then(files => {
+          return this.readLocalFiles(files);
+        })
+        .then(results => {
+          this.documents = results;
+          this.startSelection();
+        });
+    }, false);
+  }
+
+  renderDocument() {
+    const current = this.documents[this.docIx];
+    $(constants.docAreaId).html(current.html);
+    $(constants.currentDocNameId).html(current.html);
+  }
+
+  startSelection() {
+    $(constants.directoryLoaderId).hide();
+    this.docIx = 0;
+    this.renderDocument();
+    const els = $(constants.docAreaId).find("*");
+    // we need both enter/leave and over/out pairs
+    // for this to work correctly with nested nodes
+    els.on("mouseenter mouseover", (e) => {
+      e.stopPropagation();
+      $(e.target).addClass(constants.overClass);
+    });
+    els.on("mouseleave mouseout", (e) => {
+      e.stopPropagation();
+      $(e.target).removeClass(constants.overClass);
+    });
+  }
+
+  stopSelection() {
+  }
+
+  nextDocument() {
+  }
+
+  prevDocument() {
+  }
+}
 
 let LCA = null;
 let docIx = -1;
@@ -17,8 +97,6 @@ let docIx = -1;
 export const runUI = () => {
   // clear the chunk display
   // $("#lca-html").text("").html();
-  $("#hext-template-copyable").val("");
-  $("#hext-template-copyable").addClass("hidden");
 
   // grab all HTML document's elements
   const els = $("#main").find("*");
@@ -29,11 +107,11 @@ export const runUI = () => {
   // for this to work correctly with nested nodes
   els.on("mouseenter mouseover", (e) => {
     e.stopPropagation();
-    $(e.target).addClass(overClass);
+    $(e.target).addClass(constants.overClass);
   });
   els.on("mouseleave mouseout", (e) => {
     e.stopPropagation();
-    $(e.target).removeClass(overClass);
+    $(e.target).removeClass(constants.overClass);
   });
 
   // when we click, add the node to our node list
@@ -46,31 +124,32 @@ export const runUI = () => {
     // add to selected
     const selIx = selectedEls.indexOf(e);
     if(selIx === -1) {
-      $(e.target).addClass(selectedClass);
+      $(e.target).addClass(constants.selectedClass);
       selectedEls.push(e);
     }
     // remove from selected
     else {
-      $(e.target).removeClass(selectedClass);
+      $(e.target).removeClass(constants.selectedClass);
       selectedEls.splice(selIx, 1);
     }
 
     // highlight parent element if we have some nodes
     const lca = findLCA(selectedEls);
-    $("*").removeClass(selectedParentClass);
-    $(lca).addClass(selectedParentClass);
+    $("*").removeClass(constants.selectedParentClass);
+    $(lca).addClass(constants.selectedParentClass);
 
     // this really shouldn't happen anymore. but we have
     // to recover from the possibility somehow
     if (!lca) {
-      $("*").removeClass(selectedParentClass);
-      $("*").removeClass(selectedClass);
+      $("*").removeClass(constants.selectedParentClass);
+      $("*").removeClass(constants.selectedClass);
       selectedEls = [];
     }
     // we have an LCA, grab the outerHTML and display the chunk
     else {
       // NOTE: if overClass changes, this needs to change
-      const chunk = lca.outerHTML.replace(/\s*autoscrape-over\s*/, " ");
+      const re = RegExp(`\\s*${constants.overClass}\\s*`, "g")
+      const chunk = lca.outerHTML.replace(re, " ");
       // $("#lca-html").text(chunk).html();
       LCA = chunk;
     }
@@ -153,7 +232,7 @@ const dataReady = (data) => {
   $("#current").text(docIx + 1);
   $("#total").text(data.html.length);
 
-  $("#main").html(data.html[docIx]);
+  //$("#main").html(data.html[docIx]);
 
   $("#complete").show();
   runUI();
@@ -161,8 +240,6 @@ const dataReady = (data) => {
     $("#complete").hide();
     stopUI();
     const hext = html2hext(LCA.replace("\n", "").trim());
-    $("#hext-template-copyable").val(hext);
-    $("#hext-template textarea").removeClass("hidden");
     sendHextUpwards(hext);
   });
   $("#cancel").on("click", () => {
@@ -174,7 +251,8 @@ const dataReady = (data) => {
 };
 
 export const startLoading = (d) => {
-  const url = String(window.location).replace(/\/output.*/, '/embeddata')
+  const extractor = new Extractor();
+  const url = String(window.location).replace(/\/output.*/, '/embeddata');
   fetch(url, { credentials: 'same-origin' })
     .then((response) => {
       if (!response.ok) {
@@ -193,7 +271,11 @@ export const startLoading = (d) => {
         dataReady(data);
       }
     })
-    .catch(console.error)
+    .catch((e) => {
+      console.error("Failure to load embeddata from API:\n", e);
+      // TODO: enable directory loader
+      extractor.showDirectoryLoader();
+    });
 };
 
 window.addEventListener('hashchange', startLoading);

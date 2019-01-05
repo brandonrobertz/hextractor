@@ -1,6 +1,4 @@
-import $ from 'jquery';
-
-import { selectedClass } from 'js/constants';
+import constants from 'js/constants';
 
 /**
  * Convert an HTML chunk, with selected classes attached, into
@@ -37,7 +35,7 @@ const html2hext = (html) => {
     window.N = node;
     // build selector
     let selectors = [];
-    if (node.classList.contains(selectedClass)) {
+    if (node.classList.contains(constants.selectedClass)) {
       selectors.push(`@text:COLUMN-${colN++}`);
       switch (node.tagName) {
         case "IMG":

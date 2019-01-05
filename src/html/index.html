@@ -2,28 +2,119 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>LCA Hext Extraction UI</title>
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <style>
+.autoscrape-over {
+  box-shadow: 0px 0px 0px 2px #FBAA6D;
+}
+.autoscrape-selected {
+  background-color: #86F3FF !important;
+}
+.autoscrape-selected-parent {
+  box-shadow: 0px 0px 0px 2px #FBAA6D;
+}
+
+#autoscrape-extractor-ui {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+#autoscrape-controls {
+  margin-bottom: 10px;
+  height: 50px;
+}
+
+iframe#main {
+  position: absolute;
+  top: 60px;
+  width: 90%;
+  height: 85%;
+  border: 2px solid black;
+  margin: 0;
+  padding: 0;
+}
+
+#autoscrape-controls button {
+  border-radius: 12px;
+  line-height: 2.2em;
+  width: 7em;
+}
+
+#autoscrape-controls #prev {
+  color: #FBAA6D;
+  background-color: white;
+  border: 1px solid #FBAA6D;
+}
+
+#autoscrape-controls #next {
+  background-color: #FBAA6D;
+  color: white;
+  border: none;
+}
+
+#autoscrape-controls #cancel {
+  background-color: white;
+  border: none;
+}
+
+#autoscrape-controls #complete {
+  color: #86F3FF;
+  background-color: white;
+  border: 1px solid #86F3FF;
+}
+
+#autoscrape-controls #current-url {
+  width: 50%;
+}
+
+#directory-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: 2em;
+  text-align: center;
+  vertical-align: middle;
+  background-color: white;
+}
+
+#directory-loader p {
+  padding-top: 25%;
+}
+
+#directory-loader input {
+  margin: 50px;
+  padding: 50px;
+  width: 30%;
+  border: 1px dashed black;
+  text-align: center;
+}
+
+#directory-loader p {
+  margin: auto 5%;
+}
     </style>
   </head>
 
   <body>
+    <div id="directory-loader" style="display: none;">
+      <p>Select or drag-and-drop an AutoScrape data directory.</p>
+      <input id="directory-selector" type="file" webkitdirectory directory multiple />
+    </div>
     <div id="autoscrape-extractor-ui">
       <div id="autoscrape-controls">
-        <button id="prev">Previous</button>
-        <span id="current"></span> of <span id="total"></span>
-        <button id="next">Next</button>
-        <input style="display: none" id="current-url" name="current-url" type="text" readonly />
-        <button id="complete">▶</button>
-        <button id="cancel">Cancel</button>
+        <button id="prev-btn">Previous</button>
+        <span id="current-number"></span> of
+        <span id="total-number"></span>
+        <button id="next-btn">Next</button>
+        <input id="current-doc-name" type="text" readonly />
+        <button id="complete-btn">▶</button>
+        <button id="cancel-btn">Cancel</button>
       </div>
-      <div id="main"></div>
+      <div id="autoscrape-doc-area"></div>
     </div>
 
-    <script
-         src="https://code.jquery.com/jquery-2.2.4.min.js"
-         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-         crossorigin="anonymous"></script>
     <script>
     </script>
   </body>
