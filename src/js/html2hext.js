@@ -1,5 +1,25 @@
 import constants from 'js/constants';
 
+const makeid = (n) => {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < n; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+};
+
+const markAll = () => {
+  $('*').contents().filter(function() {
+    return this.nodeType == 3;
+  }).each(function(){
+    // map ID to original text
+    this.textContent = makeid(32);
+  });
+};
+
 /**
  * Convert an HTML chunk, with selected classes attached, into
  * a hext template where the selected nodes are extracted.

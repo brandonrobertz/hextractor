@@ -74,7 +74,7 @@ const findLCA = (nodes) => {
     }
     pDepth--;
     const nextParents = [];
-    for (nIx in eqDepthParents) {
+    for (const nIx in eqDepthParents) {
       const node = eqDepthParents[nIx];
       nextParents.push(node.parentNode);
     }

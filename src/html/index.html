@@ -14,25 +14,24 @@
   box-shadow: 0px 0px 0px 2px #FBAA6D;
 }
 
+#autoscrape-doc-area {
+  margin-top: 50px;
+  width: 100%;
+  border: 2px solid #333;
+}
+
 #autoscrape-extractor-ui {
   display: flex;
   flex-flow: column;
   height: 100%;
 }
 
-#autoscrape-controls {
-  margin-bottom: 10px;
+div#autoscrape-controls {
+  position: fixed;
+  top: 0;
   height: 50px;
-}
-
-iframe#main {
-  position: absolute;
-  top: 60px;
-  width: 90%;
-  height: 85%;
-  border: 2px solid black;
-  margin: 0;
-  padding: 0;
+  width: 100%;
+  background-color: white;
 }
 
 #autoscrape-controls button {
@@ -41,30 +40,30 @@ iframe#main {
   width: 7em;
 }
 
-#autoscrape-controls #prev {
+#autoscrape-controls #prev-btn {
   color: #FBAA6D;
   background-color: white;
   border: 1px solid #FBAA6D;
 }
 
-#autoscrape-controls #next {
+#autoscrape-controls #next-btn {
   background-color: #FBAA6D;
   color: white;
   border: none;
 }
 
-#autoscrape-controls #cancel {
+#autoscrape-controls #cancel-btn {
   background-color: white;
   border: none;
 }
 
-#autoscrape-controls #complete {
+#autoscrape-controls #complete-btn {
   color: #86F3FF;
   background-color: white;
   border: 1px solid #86F3FF;
 }
 
-#autoscrape-controls #current-url {
+#autoscrape-controls #current-doc-name {
   width: 50%;
 }
 
@@ -80,7 +79,7 @@ iframe#main {
 }
 
 #directory-loader p {
-  padding-top: 25%;
+  padding-top: 5%;
 }
 
 #directory-loader input {
@@ -89,6 +88,7 @@ iframe#main {
   width: 30%;
   border: 1px dashed black;
   text-align: center;
+  border-radius: 10px;
 }
 
 #directory-loader p {
@@ -114,9 +114,6 @@ iframe#main {
       </div>
       <div id="autoscrape-doc-area"></div>
     </div>
-
-    <script>
-    </script>
   </body>
 
 </html>

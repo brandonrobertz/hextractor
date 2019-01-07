@@ -5,6 +5,7 @@ const constants = {
 
   // main wrapper where we drop the document
   docAreaId: "#autoscrape-doc-area",
+  controlAreaId: "#autoscrape-controls",
 
   // AutoScrape directory loader
   directoryLoaderId: "#directory-loader",
