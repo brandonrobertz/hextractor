@@ -34,6 +34,8 @@ div#autoscrape-controls {
   height: 50px;
   width: 100%;
   background-color: white;
+  padding-left: 5px;
+  padding-top: 15px;
 }
 
 #autoscrape-controls button {
@@ -54,7 +56,8 @@ div#autoscrape-controls {
   border: none;
 }
 
-#autoscrape-controls #cancel-btn {
+#autoscrape-controls button#cancel-btn {
+  border: 1px solid #555 !important;
   background-color: white;
   border: none;
 }
@@ -101,8 +104,9 @@ div#autoscrape-controls {
   margin: auto 5%;
 }
 
-#hext-overlay pre {
+#hext-overlay #hext-area {
   padding: 50px 100px;
+  font-family: monospace;
 }
     </style>
   </head>
@@ -114,7 +118,7 @@ div#autoscrape-controls {
     </div>
     <div id="hext-overlay" style="display: none;">
       <p>This is the selected Hext template:</p>
-      <pre></pre>
+      <div id="hext-area"></div>
     </div>
     <div id="autoscrape-extractor-ui">
       <div id="autoscrape-controls">

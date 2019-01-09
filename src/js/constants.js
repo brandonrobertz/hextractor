@@ -15,6 +15,7 @@ const constants = {
 
   // overlay to show Hext template
   hextOverlayId: "#hext-overlay",
+  hextDisplayId: "#hext-area",
 
   // elements to store meta information
   currentNumberId: "#current-number",
@@ -35,6 +36,7 @@ const constants = {
 }
 .autoscrape-selected {
   background-color: #86F3FF !important;
+  box-shadow: 0px 0px 0px 2px #268BD2 !important;
 }
 .autoscrape-selected-parent {
   box-shadow: 0px 0px 100px 1000px rgba(0.5, 0.5, 0.5, 0.1) !important;

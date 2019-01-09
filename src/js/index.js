@@ -102,7 +102,7 @@ class Extractor {
 
   showHextTemplate(hext) {
     $(constants.hextOverlayId).show();
-    $(constants.hextOverlayId).find("pre").text(hext);
+    $(constants.hextDisplayId).text(hext);
   }
 
   setupSelectionMode() {
@@ -135,8 +135,7 @@ class Extractor {
 
     all.on("mouseleave mouseout", (e) => {
       e.stopPropagation();
-      const jqel = $(e.target);
-      jqel.removeClass(constants.overClass);
+      $(e.target).removeClass(constants.overClass);
     });
 
     all.on("click", (e) => {
