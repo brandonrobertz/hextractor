@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise';
+import FileSaver from 'file-saver';
 
 import findLCA from 'js/lca';
 import html2hext from 'js/html2hext';
@@ -103,6 +104,13 @@ class Extractor {
   showHextTemplate(hext) {
     $(constants.hextOverlayId).show();
     $(constants.hextDisplayId).text(hext);
+    $(constants.hextDownloadId).on("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const type = {type: "text/plain;charset=utf-8"};
+      const file = new File([hext], "extractor.hext", type);
+      FileSaver.saveAs(file);
+    });
   }
 
   setupSelectionMode() {

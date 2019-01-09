@@ -16,6 +16,7 @@ const constants = {
   // overlay to show Hext template
   hextOverlayId: "#hext-overlay",
   hextDisplayId: "#hext-area",
+  hextDownloadId: "#hext-download-btn",
 
   // elements to store meta information
   currentNumberId: "#current-number",

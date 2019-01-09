@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "datatransfer-files-promise": "^1.2.0",
+    "file-saver": "^2.0.0",
     "jquery": "^3.3.1"
   }
 }
