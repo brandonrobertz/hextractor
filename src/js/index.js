@@ -8,6 +8,8 @@ import html2hext from 'js/html2hext';
 import constants from 'js/constants';
 import { resize, sendHextUpwards } from 'js/api';
 
+import style from 'css/style.css';
+
 class Extractor {
   constructor(documents) {
     this.documents = documents || [];

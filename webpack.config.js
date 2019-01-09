@@ -22,6 +22,17 @@ module.exports = {
       template: 'src/html/index.html',
     }),
     new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
-  ]
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          { loader: "style-loader" },
+          { loader: "css-loader" }
+        ]
+      }
+    ]
+  }
 };
 
