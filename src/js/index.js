@@ -195,7 +195,7 @@ class Extractor {
     );
     const iframe = document.createElement('iframe');
     iframe.onload = this.iframeLoaded.bind(this);
-    //iframe.sandbox = "allow-scripts allow-same-origin";
+    iframe.sandbox = "allow-same-origin";
     iframe.srcdoc = (
       cleaned +
       `<style>${current.css}</style>` +
