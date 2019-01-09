@@ -5,7 +5,7 @@ import { getFilesFromDataTransferItems } from 'datatransfer-files-promise';
 import findLCA from 'js/lca';
 import html2hext from 'js/html2hext';
 import constants from 'js/constants';
-import { sendHextUpwards } from 'js/api';
+import { resize, sendHextUpwards } from 'js/api';
 
 class Extractor {
   constructor(documents) {
@@ -16,6 +16,7 @@ class Extractor {
     // by default assume we're living inside a workbench module
     // turn this off to disable API functionality
     this.workbench = true;
+    this.iframe = null;
   }
 
   readLocalFiles(files) {
@@ -99,6 +100,11 @@ class Extractor {
     }, false);
   }
 
+  showHextTemplate(hext) {
+    $(constants.hextOverlayId).show();
+    $(constants.hextOverlayId).find("pre").text(hext);
+  }
+
   setupSelectionMode() {
     $(constants.directoryLoaderId).hide();
     $(constants.controlAreaId).show();
@@ -117,81 +123,103 @@ class Extractor {
     this.selectedEls = [];
   }
 
-  renderDocument() {
-    const current = this.documents[this.docIx];
-    $(constants.docAreaId).html(current.html);
-    // this is hacky/brittle, find a more robust way to do this
-    $(constants.docAreaId).append(`<style>${current.css}</style>`);
-    $(constants.currentDocNameId).val(current.name);
-    $(constants.currentNumberId).text(this.docIx + 1);
-    $(constants.totalNumberId).text(this.documents.length);
-  }
+  iframeLoaded(e) {
+    const doc = $("iframe");
+    const contents = doc.contents();
+    const all = contents.find("*");
 
-  startSelection() {
-    this.renderDocument();
-    const els = $(constants.docAreaId).find("*");
-    // we need both enter/leave and over/out pairs
-    // for this to work correctly with nested nodes
-    els.on("mouseenter mouseover", (e) => {
+    all.on("mouseenter mouseover", (e) => {
       e.stopPropagation();
       $(e.target).addClass(constants.overClass);
     });
-    els.on("mouseleave mouseout", (e) => {
+
+    all.on("mouseleave mouseout", (e) => {
       e.stopPropagation();
-      $(e.target).removeClass(constants.overClass);
+      const jqel = $(e.target);
+      jqel.removeClass(constants.overClass);
     });
-    // when we click, add the node to our node list
-    // and also outline it
-    els.on("click", (e) => {
+
+    all.on("click", (e) => {
       // don't propogate click upwards
       e.preventDefault()
       e.stopPropagation();
 
+      const jqel = $(e.target);
+      jqel.addClass(constants.selectedClass);
+
       // add to selected
       const selIx = this.selectedEls.indexOf(e);
       if(selIx === -1) {
-        $(e.target).addClass(constants.selectedClass);
+        jqel.addClass(constants.selectedClass);
         this.selectedEls.push(e);
       }
       // remove from selected
       else {
-        $(e.target).removeClass(constants.selectedClass);
+        jqel.removeClass(constants.selectedClass);
         this.selectedEls.splice(selIx, 1);
       }
 
       // highlight parent element if we have some nodes
       const lca = findLCA(this.selectedEls);
-      $("*").removeClass(constants.selectedParentClass);
+      all.removeClass(constants.selectedParentClass);
       $(lca).addClass(constants.selectedParentClass);
 
       // this really shouldn't happen anymore. but we have
       // to recover from the possibility somehow
       if (!lca) {
-        $("*").removeClass(constants.selectedParentClass);
-        $("*").removeClass(constants.selectedClass);
+        all.removeClass(constants.selectedParentClass);
+        all.removeClass(constants.selectedClass);
         this.selectedEls = [];
       }
       // we have an LCA, grab the outerHTML and display the chunk
       else {
-        // NOTE: if overClass changes, this needs to change
         const re = RegExp(`\\s*${constants.overClass}\\s*`, "g")
         const chunk = lca.outerHTML.replace(re, " ");
-        // $("#lca-html").text(chunk).html();
         this.LCA = chunk;
       }
     });
+  };
+
+  startSelection() {
+    const current = this.documents[this.docIx];
+    const cleaned = current.html.replace(
+      /<script.*>.*<\/script>|<link[^>]*\/>|<style.*>.*<\/style>|<iframe.*>.*<\/iframe>/mg,
+      ""
+    );
+    const iframe = document.createElement('iframe');
+    iframe.onload = this.iframeLoaded.bind(this);
+    //iframe.sandbox = "allow-scripts allow-same-origin";
+    iframe.srcdoc = (
+      cleaned +
+      `<style>${current.css}</style>` +
+      `<style>${constants.autoScrapeStyles}</style>`
+    );
+    if (this.iframe) {
+      $("iframe").remove();
+    }
+    this.iframe = iframe;
+    //$(constants.docAreaId).html(current.html);
+    // this is hacky/brittle, find a more robust way to do this
+    $(constants.currentDocNameId).val(current.name);
+    $(constants.currentNumberId).text(this.docIx + 1);
+    $(constants.totalNumberId).text(this.documents.length);
+    document.body.appendChild(iframe);
   }
 
   stopSelection() {
-    //$(constants.docAreaId).html("");
-    const els = $(constants.docAreaId).find("*");
-    els.removeClass(constants.overClass);
-    els.off();
-    els.on("click", (e) => {
+    const doc = $("iframe");
+    const contents = doc.contents();
+    const all = contents.find("*");
+    all.removeClass(constants.overClass);
+    all.off();
+    all.on("click", (e) => {
       e.preventDefault()
       e.stopPropagation();
     });
-    //$("#complete").hide();
+    if (this.iframe) {
+      $("iframe").remove();
+      this.iframe = null;
+    }
   }
 
   selectionComplete() {
@@ -199,6 +227,9 @@ class Extractor {
     const hext = html2hext(this.LCA.replace("\n", "").trim());
     if (this.workbench) {
       sendHextUpwards(hext);
+    }
+    else {
+      this.showHextTemplate(hext);
     }
   }
 
@@ -235,7 +266,6 @@ export const startLoading = (d) => {
       }
       else {
         resize(500);
-        //dataReady(data);
         extractor.documents = data;
         extractor.setupSelectionMode();
         extractor.startSelection();

@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import constants from 'js/constants';
 
 const makeid = (n) => {
