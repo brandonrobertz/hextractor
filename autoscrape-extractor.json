@@ -10,7 +10,20 @@
     {
       "name": "HTML Column",
       "id_name" : "html_column",
-      "type": "column"
+      "type": "column",
+      "default": "html"
+    },
+    {
+      "name": "Name Column",
+      "id_name" : "name_column",
+      "type": "column",
+      "default": "url"
+    },
+    {
+      "name": "CSS Column",
+      "id_name" : "css_column",
+      "type": "column",
+      "default": "css"
     },
     {
       "name": "Hext template",

@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --mode=development",
-    "watch": "webpack --watch --mode=development"
+    "build-prod": "webpack --mode=production && cp dist/index.html autoscrape-extractor.html",
+    "watch": "webpack --watch --mode=development",
+    "serve": "./node_modules/http-server/bin/http-server ./dist/ -c-1"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
     "css-loader": "^2.1.0",
     "html-webpack-inline-source-plugin": "^1.0.0-beta.2",
     "html-webpack-plugin": "^4.0.0-beta.5",
+    "http-server": "^0.11.1",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"
   },

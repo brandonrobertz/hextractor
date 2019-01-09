@@ -267,18 +267,18 @@ export const startLoading = (d) => {
       }
       return response.json()
     })
-    .then((data) => {
-      if (!data.html) {
+    .then((embeddata) => {
+      if (!embeddata.data) {
         resize(0);
       }
       else {
         resize(500);
-        extractor.documents = data;
+        extractor.documents = embeddata.data;
         extractor.setupSelectionMode();
         extractor.startSelection();
       }
     })
-    .catch((e) => {
+    .catch(e => {
       console.error("Failure to load embeddata from API:\n", e);
       extractor.workbench = false;
       extractor.showDirectoryLoader();
