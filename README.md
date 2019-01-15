@@ -1,5 +1,13 @@
 # AutoScrape Extractor for Workbench
 
+This module provides a web-based user interface for
+building [Hext templates](https://github.com/thomastrapp/hext)
+to extract structured data from source HTML documents.
+
+It can run in two modes:
+- as a standalone static HTML script (just open in your browser)
+- as a Workbench module
+
 Add this module to workbench via the "Import module..."
 option. Paste the URL of this GitHub repository.
 
