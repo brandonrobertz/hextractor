@@ -48,59 +48,62 @@ class Extractor {
     return Promise.all(promises);
   }
 
+  onDirectorySelected(event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const items = event.dataTransfer ? event.dataTransfer.items : event.target.files;
+    getFilesFromDataTransferItems(items)
+      .then(files => {
+        return this.readLocalFiles(files);
+      })
+      .then(results => {
+        // group HTML and CSS documents together under the
+        // HTML filename's key
+        const htmlAndCSS = {};
+        results.forEach(result => {
+          const matches = result.name.match(/(.*)\.([^\.]{3,})$/);
+          const extension = matches[2];
+          let filename = result.name;
+          // AutoScrape saves CSS as [path].html.css
+          if (result.name.endsWith(".css")) {
+            filename = matches[1];
+          }
+          if (!htmlAndCSS[filename]) {
+            htmlAndCSS[filename] = {
+              name: filename
+            };
+          }
+          htmlAndCSS[filename][extension] = result.data;
+        });
+        // flatten into an array
+        return Object.keys(htmlAndCSS).map(name => {
+          const css = htmlAndCSS[name].css;
+          const html = htmlAndCSS[name].html;
+          return {
+            name: name,
+            css: css,
+            html: html
+          };
+        });
+      })
+      .then(results => {
+        this.documents = results;
+        this.setupSelectionMode();
+        this.startSelection();
+      })
+      .catch(e => {
+        console.error("Data transfer error", e);
+      });
+  }
+
   showDirectoryLoader() {
     const that = this;
     $(constants.controlAreaId).hide();
     $(constants.directoryLoaderId).show();
     const dropArea = document.querySelector(constants.directorySelectorId);
-    dropArea.addEventListener('drop', event => {
-      event.stopPropagation();
-      event.preventDefault();
-
-      const items = event.dataTransfer.items;
-      getFilesFromDataTransferItems(items)
-        .then(files => {
-          return that.readLocalFiles(files);
-        })
-        .then(results => {
-          // group HTML and CSS documents together under the
-          // HTML filename's key
-          const htmlAndCSS = {};
-          results.forEach(result => {
-            const matches = result.name.match(/(.*)\.([^\.]{3,})$/);
-            const extension = matches[2];
-            let filename = result.name;
-            // AutoScrape saves CSS as [path].html.css
-            if (result.name.endsWith(".css")) {
-              filename = matches[1];
-            }
-            if (!htmlAndCSS[filename]) {
-              htmlAndCSS[filename] = {
-                name: filename
-              };
-            }
-            htmlAndCSS[filename][extension] = result.data;
-          });
-          // flatten into an array
-          return Object.keys(htmlAndCSS).map(name => {
-            const css = htmlAndCSS[name].css;
-            const html = htmlAndCSS[name].html;
-            return {
-              name: name,
-              css: css,
-              html: html
-            };
-          });
-        })
-        .then(results => {
-          this.documents = results;
-          this.setupSelectionMode();
-          this.startSelection();
-        })
-        .catch(e => {
-          console.error("Data transfer error", e);
-        });
-    }, false);
+    dropArea.addEventListener('change', this.onDirectorySelected.bind(this), false);
+    dropArea.addEventListener('drop', this.onDirectorySelected.bind(this), false);
   }
 
   showHextTemplate(hext) {
