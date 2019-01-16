@@ -1,8 +1,8 @@
 iframe {
   position: absolute;
   top: 60px;
-  width: 90%;
-  height: 85%;
+  width: 100%;
+  height: 87%;
   border: 2px solid black;
   margin: 0 auto;
   padding: 0;
@@ -25,16 +25,16 @@ div#autoscrape-controls {
 }
 
 #autoscrape-controls button {
-  border-radius: 12px;
+  border-radius: 30px;
   line-height: 2.2em;
   width: 7em;
+  height: 3em;
 }
 
 #autoscrape-controls #prev-btn {
   color: #FBAA6D;
   background-color: transparent;
-  border: 1px solid #FBAA6D;  
-  border-radius: 20px;
+  border: 1px solid #FBAA6D;
 }
 
 #autoscrape-controls #next-btn {
@@ -49,7 +49,7 @@ div#autoscrape-controls {
   border: none;
 }
 
-#autoscrape-controls #complete-btn {
+#autoscrape-controls button#complete-btn {
   color: #44B9C6;
   background-color: white;
   border: 1px solid #44B9C6;
