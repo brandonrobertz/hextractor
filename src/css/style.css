@@ -32,8 +32,9 @@ div#autoscrape-controls {
 
 #autoscrape-controls #prev-btn {
   color: #FBAA6D;
-  background-color: white;
-  border: 1px solid #FBAA6D;
+  background-color: transparent;
+  border: 1px solid #FBAA6D;  
+  border-radius: 20px;
 }
 
 #autoscrape-controls #next-btn {
@@ -98,4 +99,3 @@ div#autoscrape-controls {
   max-width: 900px;
   margin: 0 auto;
 }
-
