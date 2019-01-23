@@ -1,12 +1,14 @@
 import $ from 'jquery';
 
-import { getFilesFromDataTransferItems } from 'datatransfer-files-promise';
 import FileSaver from 'file-saver';
 
 import findLCA from 'js/lca';
 import html2hext from 'js/html2hext';
 import constants from 'js/constants';
 import { resize, sendHextUpwards } from 'js/api';
+import {
+  fromDirectoryDrop, fromDirectorySelect, fromZIPSelect
+} from 'js/loaders';
 
 import style from 'css/style.css';
 
@@ -22,79 +24,52 @@ class Extractor {
     this.iframe = null;
   }
 
-  readLocalFiles(files) {
-    const promises = files.map(file => {
-      // AutoScrape directory files will always have an extension
-      if (!file.name.endsWith(".html") && !file.name.endsWith(".css")) {
-        return;
-      }
-      return new Promise((res, rej) => {
-        const filepath = file.filepath;
-        const start = 0;
-        const stop = file.size - 1;
-        const blob = file.slice(start, stop + 1);
-        const reader = new FileReader();
-        reader.onloadend = (e) => {
-          if (e.target.readyState == 2) { // DONE
-            res({
-              "data": e.target.result,
-              "name": filepath,
-            });
-          }
-        };
-        reader.readAsText(blob);
-      });
-    }).filter(x => x);
-    return Promise.all(promises);
-  }
-
   onDirectorySelected(event) {
     event.stopPropagation();
     event.preventDefault();
 
-    const items = event.dataTransfer ? event.dataTransfer.items : event.target.files;
-    getFilesFromDataTransferItems(items)
-      .then(files => {
-        return this.readLocalFiles(files);
-      })
-      .then(results => {
-        // group HTML and CSS documents together under the
-        // HTML filename's key
-        const htmlAndCSS = {};
-        results.forEach(result => {
-          const matches = result.name.match(/(.*)\.([^\.]{3,})$/);
-          const extension = matches[2];
-          let filename = result.name;
-          // AutoScrape saves CSS as [path].html.css
-          if (result.name.endsWith(".css")) {
-            filename = matches[1];
-          }
-          if (!htmlAndCSS[filename]) {
-            htmlAndCSS[filename] = {
-              name: filename
-            };
-          }
-          htmlAndCSS[filename][extension] = result.data;
-        });
-        // flatten into an array
-        return Object.keys(htmlAndCSS).map(name => {
-          const css = htmlAndCSS[name].css;
-          const html = htmlAndCSS[name].html;
-          return {
-            name: name,
-            css: css,
-            html: html
+    //const items = event.dataTransfer ? event.dataTransfer.items : event.target.files;
+    let loader = null;
+    // directory drop event
+    if (event.dataTransfer)
+      loader = fromDirectoryDrop(event);
+
+    loader.then(results => {
+      // group HTML and CSS documents together under the
+      // HTML filename's key
+      const htmlAndCSS = {};
+      results.forEach(result => {
+        const matches = result.name.match(/(.*)\.([^\.]{3,})$/);
+        const extension = matches[2];
+        let filename = result.name;
+        // AutoScrape saves CSS as [path].html.css
+        if (result.name.endsWith(".css")) {
+          filename = matches[1];
+        }
+        if (!htmlAndCSS[filename]) {
+          htmlAndCSS[filename] = {
+            name: filename
           };
-        });
-      })
-      .then(results => {
-        this.documents = results;
-        this.setupSelectionMode();
-        this.startSelection();
-      })
-      .catch(e => {
-        console.error("Data transfer error", e);
+        }
+        htmlAndCSS[filename][extension] = result.data;
       });
+      // flatten into an array
+      return Object.keys(htmlAndCSS).map(name => {
+        const css = htmlAndCSS[name].css;
+        const html = htmlAndCSS[name].html;
+        return {
+          name: name,
+          css: css,
+          html: html
+        };
+      });
+    }).then(results => {
+      this.documents = results;
+      this.setupSelectionMode();
+      this.startSelection();
+    }).catch(e => {
+      console.error("Data transfer error", e);
+    });
   }
 
   showDirectoryLoader() {
