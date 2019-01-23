@@ -7,7 +7,7 @@ import html2hext from 'js/html2hext';
 import constants from 'js/constants';
 import { resize, sendHextUpwards } from 'js/api';
 import {
-  fromDirectoryDrop, fromDirectorySelect, fromZIPSelect
+  fromDirectoryDrop, fromDirectorySelect, fromZipSelect
 } from 'js/loaders';
 
 import style from 'css/style.css';
@@ -33,6 +33,10 @@ class Extractor {
     // directory drop event
     if (event.dataTransfer)
       loader = fromDirectoryDrop(event);
+    else if (event.target.files)
+      loader = fromDirectorySelect(event);
+    else if (false)
+      loader = fromZipSelect(event);
 
     loader.then(results => {
       // group HTML and CSS documents together under the
