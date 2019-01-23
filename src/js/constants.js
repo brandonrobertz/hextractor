@@ -12,6 +12,7 @@ const constants = {
   // AutoScrape directory loader
   directoryLoaderId: "#directory-loader",
   directorySelectorId: "#directory-selector",
+  zipSelectorId: "#zip-selector",
 
   // overlay to show Hext template
   hextOverlayId: "#hext-overlay",

@@ -1,5 +1,8 @@
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise';
 
+import JSZip from 'jszip';
+
+
 const checkWebExtension = (name) => {
   // AutoScrape directory files will always have an extension
   // TODO: handle other HTML-like non-.html extensions (e.g., .php)
@@ -52,7 +55,26 @@ export const fromDirectorySelect = (event) => {
 };
 
 export const fromZipSelect = (event) => {
-  return new Promise((res, rej) => {
-    rej("ZIP loader not implemented");
-  });
+  const file = event.target.files[0];
+  return JSZip.loadAsync(file)
+    .then(function(zip) {
+      const promises =  [];
+      zip.forEach((name, zipEntry) => {
+        if (zipEntry.dir || !checkWebExtension(name))
+          return;
+
+        const p = zip.file(name)
+          .async("string")
+          .then((data) => {
+            return {
+              name: name,
+              data: data
+            };
+          });
+
+        promises.push(p);
+      });
+      return Promise.all(promises);
+    });
 };
+

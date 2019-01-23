@@ -7,8 +7,12 @@
 
   <body>
     <div id="directory-loader" style="display: none;">
-      <p>Select or drag-and-drop an AutoScrape data directory.</p>
+      <p id="directory-instructions" >Select or drag-and-drop an AutoScrape data directory.</p>
       <input id="directory-selector" type="file" webkitdirectory directory multiple />
+      <div id="zip-area">
+        <p>Or select an AutoScrape ZIP file.</p>
+        <input id="zip-selector" type="file" />
+      </div>
     </div>
     <div id="hext-overlay" style="display: none;">
       <p>This is the selected Hext template:</p>

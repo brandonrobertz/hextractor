@@ -108,7 +108,6 @@ span {
   top: 0;
   left: 0;
   width: 100%;
-  font-size: 2em;
   text-align: center;
   vertical-align: middle;
   background-color: white;
@@ -116,11 +115,12 @@ span {
 }
 
 #hext-overlay p,
-#directory-loader p {
+#directory-loader #directory-instructions {
   padding-top: 5%;
+  font-size: 2em;
 }
 
-#directory-loader input {
+#directory-loader input#directory-selector {
   margin: 50px;
   padding: 50px;
   width: 30%;

@@ -28,14 +28,13 @@ class Extractor {
     event.stopPropagation();
     event.preventDefault();
 
-    //const items = event.dataTransfer ? event.dataTransfer.items : event.target.files;
     let loader = null;
     // directory drop event
     if (event.dataTransfer)
       loader = fromDirectoryDrop(event);
-    else if (event.target.files)
+    else if (event.target.outerHTML.match("director-melector"))
       loader = fromDirectorySelect(event);
-    else if (false)
+    else if (event.target.outerHTML.match("zip-selector"))
       loader = fromZipSelect(event);
 
     loader.then(results => {
@@ -81,8 +80,12 @@ class Extractor {
     $(constants.controlAreaId).hide();
     $(constants.directoryLoaderId).show();
     const dropArea = document.querySelector(constants.directorySelectorId);
-    dropArea.addEventListener('change', this.onDirectorySelected.bind(this), false);
-    dropArea.addEventListener('drop', this.onDirectorySelected.bind(this), false);
+    dropArea.addEventListener(
+      'change', this.onDirectorySelected.bind(this), false);
+    dropArea.addEventListener(
+      'drop', this.onDirectorySelected.bind(this), false);
+    document.querySelector(constants.zipSelectorId)
+      .addEventListener("change", this.onDirectorySelected.bind(this), false);
   }
 
   showHextTemplate(hext) {
