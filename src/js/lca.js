@@ -23,13 +23,13 @@ const findLCA = (nodes) => {
   let lowest = null;
 
   if (nodes.length === 1) {
-    return nodes[0].target.parentNode;
+    return nodes[0].parentNode;
   }
 
   // get the depth of each node
   for (const nodeIx in nodes) {
     const node = nodes[nodeIx];
-    const depth = getDepth(node.target);
+    const depth = getDepth(node);
     if (depthNodes[depth] === undefined) {
       depthNodes[depth] = [];
     }
@@ -45,7 +45,7 @@ const findLCA = (nodes) => {
   let eqDepthParents = [];
   for (const depth in depthNodes) {
     for (const nIx in depthNodes[depth]) {
-      let parentNode = depthNodes[depth][nIx].target.parentNode;
+      let parentNode = depthNodes[depth][nIx].parentNode;
       if (depth == lowest) {
         eqDepthParents.push(parentNode);
       }

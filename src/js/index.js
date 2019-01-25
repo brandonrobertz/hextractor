@@ -69,7 +69,7 @@ class Extractor {
     }).then(results => {
       this.documents = results;
       this.setupSelectionMode();
-      this.startSelection();
+      this.loadDocumentFrame();
     }).catch(e => {
       console.error("Data transfer error", e);
     });
@@ -100,6 +100,11 @@ class Extractor {
     });
   }
 
+  /**
+   * Setup event handlers for interacting with documents via
+   * the header controls and reset the LCA/selected nodes
+   * state.
+   */
   setupSelectionMode() {
     $(constants.directoryLoaderId).hide();
     $(constants.controlAreaId).show();
@@ -118,42 +123,142 @@ class Extractor {
     this.selectedEls = [];
   }
 
-  selectedNodeMenu(jqel, e) {
-    e.preventDefault()
-    e.stopPropagation();
+  /**
+   * Find the position of an element on the page in
+   * [x, y] format.
+   */
+  findPos(obj) {
+    var curleft = 0;
+    var curtop = 0;
+    if (obj.offsetParent) {
+      do {
+        curleft += obj.offsetLeft;
+        curtop += obj.offsetTop;
+      } while (obj = obj.offsetParent);
+      return [curleft,curtop];
+    }
+  }
+
+  /**
+   * Opens a selected element control menu for removing (deselcting)
+   * and labeling the column.
+   */
+  openNodeMenu(e, el) {
     const menu = $(constants.selectedMenu);
-    const eBox = e.target.getBoundingClientRect();
-    const mBox = menu[0].getBoundingClientRect();
-    const top = eBox.bottom + mBox.height
-    const left = eBox.left - 6;
-    menu.css({
-      position: "relative",
-      top: top,
-      left: left
+    const currentScroll = (function findBody(thisEl) {
+      if(!thisEl.parentElement) {
+        return thisEl.scrollTop;
+      }
+      return findBody(thisEl.parentNode);
+    })(el);
+
+    const closeBtn = menu.find("#autoscrape-close");
+    closeBtn.on("click", () => {
+      this.deopenNodeMenu(el);
     });
-    $(constants.selectedMenu).show();
-    menu.find("#autoscrape-close").on("click", () => {
-      this.deselectedNodeMenu(e);
+    const removeBtn = menu.find("#autoscrape-remove");
+    removeBtn.on("click", () => {
+      $(el).removeClass(constants.selectedClass);
+      this.deselectNode(e, el);
+      this.deopenNodeMenu(el);
     });
+
     // remove this menu on scroll. otherwise
     // we need to 1) move this with the window scroll
     // and 2) hide it when the menu is outside of
     // the iframe
-    $("iframe").contents().scroll((e) => {
-      this.deselectedNodeMenu(e);
+    $("iframe").contents().scroll((el) => {
+      this.deopenNodeMenu(el);
     });
+
+    // show it last
+    const pos = this.findPos(e.target);
+    const eBox = e.target.getBoundingClientRect();
+    menu.css({
+      position: "relative",
+      top: pos[1] + eBox.height + 50 - currentScroll,
+      left: pos[0] - 6
+    });
+    $(constants.selectedMenu).show();
   }
 
-  deselectedNodeMenu(e) {
-    e.preventDefault()
-    e.stopPropagation();
+  deopenNodeMenu() {
+    const menu = $(constants.selectedMenu);
+    const closeBtn = menu.find("#autoscrape-close");
+    closeBtn.off("click");
+    const removeBtn = menu.find("#autoscrape-remove");
+    removeBtn.off("click");
     $(constants.selectedMenu).hide();
   }
 
-  iframeLoaded(e) {
+  selectNode(e, deselect=false) {
+    // don't propogate click upwards
+    e.preventDefault()
+    e.stopPropagation();
+    this.deopenNodeMenu();
+
+    const all = this.allDocNodes();
+    const jqel = $(e.target);
+
+    const selElIx = this.selectedEls.indexOf(e.target);
+    const unselect = deselect || selElIx > -1;
+
+    if (!unselect)
+      jqel.addClass(constants.selectedClass);
+
+    // add to selected
+    if(!unselect) {
+      jqel.addClass(constants.selectedClass);
+      this.selectedEls.push(e.target);
+    }
+    else {
+      jqel.removeClass(constants.selectedClass);
+      this.selectedEls.splice(selElIx, 1);
+      this.deopenNodeMenu();
+    }
+
+    // highlight parent element if we have some nodes
+    const lca = findLCA(this.selectedEls);
+    all.removeClass(constants.selectedParentClass);
+    $(lca).addClass(constants.selectedParentClass);
+
+    // this really shouldn't happen anymore. but we have
+    // to recover from the possibility somehow
+    if (!lca) {
+      console.error("No LCA found! Clearing selections");
+      all.removeClass(constants.selectedParentClass);
+      all.removeClass(constants.selectedClass);
+      this.selectedEls = [];
+    }
+    // we have an LCA, grab the outerHTML and display the chunk
+    else {
+      const re = RegExp(`\\s*${constants.overClass}\\s*`, "g")
+      const chunk = lca.outerHTML.replace(re, " ");
+      this.LCA = chunk;
+    }
+
+    //jqel.off("click");
+    // TODO: on click of jqel, deactivate the menu
+    if (!unselect) {
+      this.openNodeMenu(e, jqel[0]);
+    }
+  }
+
+  deselectNode(e, el) {
+    this.selectNode(e, true);
+  }
+
+  allDocNodes() {
     const doc = $("iframe");
     const contents = doc.contents();
     const all = contents.find("*");
+    return all;
+  }
+
+  iframeLoaded(e) {
+    console.log("iframe loaded!");
+    const that = this;
+    const all = this.allDocNodes();
 
     all.on("mouseenter mouseover", (e) => {
       e.stopPropagation();
@@ -166,60 +271,23 @@ class Extractor {
     });
 
     all.on("click", (e) => {
-      // don't propogate click upwards
-      e.preventDefault()
-      e.stopPropagation();
-
-      const jqel = $(e.target);
-      jqel.addClass(constants.selectedClass);
-
-      // add to selected
-      const selIx = this.selectedEls.indexOf(e);
-      if(selIx === -1) {
-        jqel.addClass(constants.selectedClass);
-        this.selectedEls.push(e);
-      }
-      // remove from selected
-      else {
-        jqel.removeClass(constants.selectedClass);
-        this.selectedEls.splice(selIx, 1);
-      }
-
-      // highlight parent element if we have some nodes
-      const lca = findLCA(this.selectedEls);
-      all.removeClass(constants.selectedParentClass);
-      $(lca).addClass(constants.selectedParentClass);
-
-      // this really shouldn't happen anymore. but we have
-      // to recover from the possibility somehow
-      if (!lca) {
-        all.removeClass(constants.selectedParentClass);
-        all.removeClass(constants.selectedClass);
-        this.selectedEls = [];
-      }
-      // we have an LCA, grab the outerHTML and display the chunk
-      else {
-        const re = RegExp(`\\s*${constants.overClass}\\s*`, "g")
-        const chunk = lca.outerHTML.replace(re, " ");
-        this.LCA = chunk;
-      }
-
-      jqel.off("click");
-      jqel.on("click", this.selectedNodeMenu.bind(this, jqel));
+      that.selectNode(e);
     });
   };
 
-  startSelection() {
+  /**
+   * Load iFrame and meta data in header for this document
+   * then dispatch to setting up event (hover/click) handlers.
+   */
+  loadDocumentFrame() {
     const current = this.documents[this.docIx];
-    const cleaned = current.html.replace(
-      /<script.*>.*<\/script>|<link[^>]*\/>|<style.*>.*<\/style>|<iframe.*>.*<\/iframe>/mg,
-      ""
-    );
     const iframe = document.createElement('iframe');
+    // TODO: add a hook to show a "loading" mask over iframe
+    console.log("Loading iframe...");
     iframe.onload = this.iframeLoaded.bind(this);
     iframe.sandbox = "allow-same-origin";
     iframe.srcdoc = (
-      cleaned +
+      current.html +
       `<style>${current.css}</style>` +
       `<style>${constants.autoScrapeStyles}</style>`
     );
@@ -227,7 +295,7 @@ class Extractor {
       $("iframe").remove();
     }
     this.iframe = iframe;
-    //$(constants.docAreaId).html(current.html);
+
     // this is hacky/brittle, find a more robust way to do this
     $(constants.currentDocNameId).val(current.name);
     $(constants.currentNumberId).text(this.docIx + 1);
@@ -266,7 +334,7 @@ class Extractor {
     this.stopSelection();
     this.docIx++;
     this.docIx = this.docIx % this.documents.length;
-    this.startSelection();
+    this.loadDocumentFrame();
   }
 
   prevDocument() {
@@ -275,7 +343,7 @@ class Extractor {
     if (this.docIx < 0) {
       this.docIx = this.documents.length - 1;
     }
-    this.startSelection();
+    this.loadDocumentFrame();
   }
 }
 
@@ -297,7 +365,7 @@ export const startLoading = (d) => {
         resize(500);
         extractor.documents = embeddata.data;
         extractor.setupSelectionMode();
-        extractor.startSelection();
+        extractor.loadDocumentFrame();
       }
     })
     .catch(e => {
