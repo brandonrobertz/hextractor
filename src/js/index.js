@@ -139,6 +139,10 @@ class Extractor {
     }
   }
 
+  makeNodeOptional(el) {
+    $(el).addClass(constants.optionalClass);
+  }
+
   /**
    * Opens a selected element control menu for removing (deselcting)
    * and labeling the column.
@@ -152,8 +156,10 @@ class Extractor {
       return findBody(thisEl.parentNode);
     })(el);
 
-    const closeBtn = menu.find("#autoscrape-close");
-    closeBtn.on("click", () => {
+    const saveBtn = menu.find("#autoscrape-save");
+    saveBtn.on("click", () => {
+      const label = $("input#autoscrape-column-name").val();
+      $(el).attr(constants.labelAttr, label);
       this.deopenNodeMenu(el);
     });
     const removeBtn = menu.find("#autoscrape-remove");
@@ -161,6 +167,10 @@ class Extractor {
       $(el).removeClass(constants.selectedClass);
       this.deselectNode(e, el);
       this.deopenNodeMenu(el);
+    });
+    const optionalBtn = menu.find("#autoscrape-optional");
+    optionalBtn.on("click", () => {
+      this.makeNodeOptional(el);
     });
 
     // remove this menu on scroll. otherwise
@@ -184,10 +194,13 @@ class Extractor {
 
   deopenNodeMenu() {
     const menu = $(constants.selectedMenu);
-    const closeBtn = menu.find("#autoscrape-close");
-    closeBtn.off("click");
+    const saveBtn = menu.find("#autoscrape-save");
+    saveBtn.off("click");
     const removeBtn = menu.find("#autoscrape-remove");
     removeBtn.off("click");
+    const optionalBtn = menu.find("#autoscrape-optional");
+    optionalBtn.off("click");
+    $("#autoscrape-column-name").val("");
     $(constants.selectedMenu).hide();
   }
 
@@ -213,6 +226,8 @@ class Extractor {
     }
     else {
       jqel.removeClass(constants.selectedClass);
+      jqel.removeClass(constants.optionalClass);
+      jqel.removeAttr(constants.labelAttr);
       this.selectedEls.splice(selElIx, 1);
       this.deopenNodeMenu();
     }
