@@ -131,6 +131,17 @@ class Extractor {
       top: top,
       left: left
     });
+    $(constants.selectedMenu).show();
+    menu.find("#autoscrape-close").on("click", () => {
+      this.deselectedNodeMenu(e);
+    });
+    // remove this menu on scroll. otherwise
+    // we need to 1) move this with the window scroll
+    // and 2) hide it when the menu is outside of
+    // the iframe
+    $("iframe").contents().scroll((e) => {
+      this.deselectedNodeMenu(e);
+    });
   }
 
   deselectedNodeMenu(e) {
@@ -193,8 +204,8 @@ class Extractor {
         this.LCA = chunk;
       }
 
-      jqel.off();
-      jqel.on("mouseover", this.selectedNodeMenu.bind(this, jqel));
+      jqel.off("click");
+      jqel.on("click", this.selectedNodeMenu.bind(this, jqel));
     });
   };
 
