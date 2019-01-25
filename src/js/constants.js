@@ -5,6 +5,7 @@ const constants = {
 
   // main wrapper where we drop the document
   docAreaId: "#autoscrape-doc-area",
+  docLoadingId: "#loading-shim",
 
   // controls header
   controlAreaId: "#autoscrape-controls",

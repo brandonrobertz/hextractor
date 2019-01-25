@@ -257,6 +257,8 @@ class Extractor {
 
   iframeLoaded(e) {
     console.log("iframe loaded!");
+    $(constants.docLoadingId).hide();
+
     const that = this;
     const all = this.allDocNodes();
 
@@ -284,6 +286,7 @@ class Extractor {
     const iframe = document.createElement('iframe');
     // TODO: add a hook to show a "loading" mask over iframe
     console.log("Loading iframe...");
+    $(constants.docLoadingId).show();
     iframe.onload = this.iframeLoaded.bind(this);
     iframe.sandbox = "allow-same-origin";
     iframe.srcdoc = (
