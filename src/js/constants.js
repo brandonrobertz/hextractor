@@ -30,6 +30,9 @@ const constants = {
   completeSelectionId: "#complete-btn",
   cancelSelectionId: "#cancel-btn",
 
+  // selected item menu
+  selectedMenu: "#autoscrape-selected-menu",
+
   // style to inject into iframe for rendering the
   // display of selected items, etc
   autoScrapeStyles: `

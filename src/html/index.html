@@ -6,6 +6,15 @@
   </head>
 
   <body>
+    <div id="autoscrape-selected-menu" style="font-size: 11px !important; font-family: sans-serif !important; background-color: #86F3FF !important; box-shadow: 0px 0px 0px 2px #268BD2 !important; height: 40px; display: inline-block; padding: 5px; z-index: 99999;">
+      <label id="autoscrape-column-label" for="column-name">
+        Name
+      </label>
+      <input id="autoscrape-column-name" type="text" />
+      <button id="autoscrape-remove">Unselect</button>
+      <button id="autoscrape-optional">Make Optional</button>
+      <button id="autoscrape-close">Close</button>
+    </div>
     <div id="directory-loader" style="display: none;">
       <p id="directory-instructions" >Select or drag-and-drop an AutoScrape data directory.</p>
       <input id="directory-selector" type="file" webkitdirectory directory multiple />

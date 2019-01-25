@@ -118,6 +118,27 @@ class Extractor {
     this.selectedEls = [];
   }
 
+  selectedNodeMenu(jqel, e) {
+    e.preventDefault()
+    e.stopPropagation();
+    const menu = $(constants.selectedMenu);
+    const eBox = e.target.getBoundingClientRect();
+    const mBox = menu[0].getBoundingClientRect();
+    const top = eBox.bottom + mBox.height
+    const left = eBox.left - 6;
+    menu.css({
+      position: "relative",
+      top: top,
+      left: left
+    });
+  }
+
+  deselectedNodeMenu(e) {
+    e.preventDefault()
+    e.stopPropagation();
+    $(constants.selectedMenu).hide();
+  }
+
   iframeLoaded(e) {
     const doc = $("iframe");
     const contents = doc.contents();
@@ -171,6 +192,9 @@ class Extractor {
         const chunk = lca.outerHTML.replace(re, " ");
         this.LCA = chunk;
       }
+
+      jqel.off();
+      jqel.on("mouseover", this.selectedNodeMenu.bind(this, jqel));
     });
   };
 
