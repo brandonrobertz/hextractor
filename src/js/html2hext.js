@@ -38,16 +38,16 @@ const html2hext = (html) => {
     // build selector
     let selectors = [];
     if (node.classList.contains(constants.selectedClass)) {
-      selectors.push(`@text:COLUMN-${colN++}`);
+      selectors.push(`@text:CONTENT-${colN++}`);
       switch (node.tagName) {
         case "IMG":
           if (node.getAttribute("src")) {
-            selectors.push(`src:COLUMN-${colN++}`);
+            selectors.push(`src:CONTENT-${colN++}`);
           }
           break;
         case "A":
           if (node.getAttribute("href")) {
-            selectors.push(`href:COLUMN-${colN++}`);
+            selectors.push(`href:CONTENT-${colN++}`);
           }
           break;
         default:
