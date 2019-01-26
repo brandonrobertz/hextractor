@@ -9,8 +9,10 @@ import { resize, sendHextUpwards } from 'js/api';
 import {
   fromDirectoryDrop, fromDirectorySelect, fromZipSelect
 } from 'js/loaders';
+import { highlightNodes } from 'js/hextHighlighting';
 
 import style from 'css/style.css';
+
 
 class Extractor {
   constructor(documents) {
@@ -160,13 +162,13 @@ class Extractor {
     saveBtn.on("click", () => {
       const label = $("input#autoscrape-column-name").val();
       $(el).attr(constants.labelAttr, label);
-      this.deopenNodeMenu(el);
+      this.closeNodeMenu(el);
     });
     const removeBtn = menu.find("#autoscrape-remove");
     removeBtn.on("click", () => {
       $(el).removeClass(constants.selectedClass);
       this.deselectNode(e, el);
-      this.deopenNodeMenu(el);
+      this.closeNodeMenu(el);
     });
     const optionalBtn = menu.find("#autoscrape-optional");
     optionalBtn.on("click", () => {
@@ -178,7 +180,7 @@ class Extractor {
     // and 2) hide it when the menu is outside of
     // the iframe
     $("iframe").contents().scroll((el) => {
-      this.deopenNodeMenu(el);
+      this.closeNodeMenu(el);
     });
 
     // show it last
@@ -192,7 +194,7 @@ class Extractor {
     $(constants.selectedMenu).show();
   }
 
-  deopenNodeMenu() {
+  closeNodeMenu() {
     const menu = $(constants.selectedMenu);
     const saveBtn = menu.find("#autoscrape-save");
     saveBtn.off("click");
@@ -208,7 +210,7 @@ class Extractor {
     // don't propogate click upwards
     e.preventDefault()
     e.stopPropagation();
-    this.deopenNodeMenu();
+    this.closeNodeMenu();
 
     const all = this.allDocNodes();
     const jqel = $(e.target);
@@ -229,7 +231,7 @@ class Extractor {
       jqel.removeClass(constants.optionalClass);
       jqel.removeAttr(constants.labelAttr);
       this.selectedEls.splice(selElIx, 1);
-      this.deopenNodeMenu();
+      this.closeNodeMenu();
     }
 
     // highlight parent element if we have some nodes
@@ -250,6 +252,13 @@ class Extractor {
       const re = RegExp(`\\s*${constants.overClass}\\s*`, "g")
       const chunk = lca.outerHTML.replace(re, " ");
       this.LCA = chunk;
+    }
+
+    // show other captured nodes
+    if (Module && lca) {
+      const html = $("iframe").contents().find("html");
+      const hext = html2hext(lca.outerHTML);
+      highlightNodes(hext, html[0]);
     }
 
     //jqel.off("click");

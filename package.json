@@ -8,7 +8,8 @@
     "build": "webpack --mode=development",
     "build-prod": "webpack --mode=production && cp dist/index.html autoscrape-extractor.html",
     "watch": "webpack --watch --mode=development",
-    "serve": "./node_modules/http-server/bin/http-server ./dist/ -c-1"
+    "serve": "./node_modules/http-server/bin/http-server ./dist/ -c-1",
+    "build-hext": "git submodule init && git submodule update --remote --merge && cd hext-emscripten && make && cp hext_wrapper.js ../dist/ && cp hext_wrapper.wasm ../dist/ && cd .."
   },
   "repository": {
     "type": "git",

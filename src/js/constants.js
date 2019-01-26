@@ -52,7 +52,12 @@ const constants = {
 }
 .autoscrape-selected-parent {
   box-shadow: 0px 0px 100px 1000px rgba(0.5, 0.5, 0.5, 0.1) !important;
-}`,
+}
+.autoscrape-also-selected {
+  background-color: #91DC47 !important;
+  box-shadow: 0px 0px 0px 2px #708F1B !important;
+}
+`,
 
 }
 
