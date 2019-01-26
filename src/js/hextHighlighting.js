@@ -49,6 +49,11 @@ const checkAlreadySelected = (el) => {
 };
 
 export const highlightNodes = (hext, html) => {
+  if (!Module) {
+    return console.warn("No emscripten Hext library found. " +
+      "Not performing additional highlighting.");
+  }
+
   tagAll(html);
   const domClone = html.cloneNode(true);
   replaceTextContent(domClone);
