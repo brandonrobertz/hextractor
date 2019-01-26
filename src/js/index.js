@@ -237,6 +237,7 @@ class Extractor {
     // highlight parent element if we have some nodes
     const lca = findLCA(this.selectedEls);
     all.removeClass(constants.selectedParentClass);
+    all.removeClass(constants.alsoSelectedClass);
     $(lca).addClass(constants.selectedParentClass);
 
     // this really shouldn't happen anymore. but we have

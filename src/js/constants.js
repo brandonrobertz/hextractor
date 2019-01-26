@@ -1,9 +1,11 @@
 const constants = {
   selectedClass: "autoscrape-selected",
+  alsoSelectedClass: "autoscrape-also-selected",
   selectedParentClass: "autoscrape-selected-parent",
   overClass: "autoscrape-over",
   optionalClass: "autoscrape-optional",
   labelAttr: "autoscrape-column-label",
+  uniqIdAttr: "autoscrape-uniq-id",
 
   // main wrapper where we drop the document
   docAreaId: "#autoscrape-doc-area",

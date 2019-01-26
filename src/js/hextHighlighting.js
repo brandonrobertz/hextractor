@@ -25,7 +25,7 @@ const tagAll = (html) => {
   const all = $(html).find("*");
   all.each((_, el) => {
     const uid = makeid(32);
-    $(el).attr("autoscrape-uniq-id", uid);
+    $(el).attr(constants.uniqIdAttr, uid);
     const contents = $(el).contents();
   });
 };
@@ -33,7 +33,7 @@ const tagAll = (html) => {
 const replaceTextContent = (html) => {
   const all = $(html).find("*");
   all.each(function(){
-    const uid = $(this).attr("autoscrape-uniq-id");
+    const uid = $(this).attr(constants.uniqIdAttr);
     $(this).contents().each((_, node) => {
       // map ID to original text
       if (node.nodeType === 3)
@@ -50,13 +50,13 @@ const checkAlreadySelected = (el) => {
 
 export const highlightNodes = (hext, html) => {
   tagAll(html);
-  const dom = html.cloneNode(true);
-  replaceTextContent(dom);
+  const domClone = html.cloneNode(true);
+  replaceTextContent(domClone);
   const json = Module.ccall(
     "html2json",
     "string",
     ["string", "string"],
-    [hext, dom.outerHTML]
+    [hext, domClone.outerHTML]
   );
 
   const parsed = JSON.parse(json);
@@ -65,7 +65,7 @@ export const highlightNodes = (hext, html) => {
     for (let key in row) {
       const val = row[key];
       const contents = $("iframe").contents();
-      const elements = contents.find(`[autoscrape-uniq-id="${val}"]`);
+      const elements = contents.find(`[${constants.uniqIdAttr}="${val}"]`);
       const found = elements[elements.length-1];
       // some text tags, like anchor links and img src won't have
       // matches, so we just ignore for now
@@ -74,7 +74,7 @@ export const highlightNodes = (hext, html) => {
         continue;
       }
       if (!checkAlreadySelected(found)) {
-        $(found).addClass("autoscrape-also-selected");
+        $(found).addClass(constants.alsoSelectedClass);
       }
     }
   }
