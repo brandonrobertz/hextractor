@@ -163,6 +163,7 @@ class Extractor {
       const label = $("input#autoscrape-column-name").val();
       $(el).attr(constants.labelAttr, label);
       this.closeNodeMenu(el);
+      this.performLCA();
     });
     const removeBtn = menu.find("#autoscrape-remove");
     removeBtn.on("click", () => {
@@ -234,6 +235,16 @@ class Extractor {
       this.closeNodeMenu();
     }
 
+    //jqel.off("click");
+    // TODO: on click of jqel, deactivate the menu
+    if (!unselect) {
+      this.openNodeMenu(e, jqel[0]);
+    }
+  }
+
+  performLCA() {
+    const all = this.allDocNodes();
+
     // highlight parent element if we have some nodes
     const lca = findLCA(this.selectedEls);
     all.removeClass(constants.selectedParentClass);
@@ -261,12 +272,6 @@ class Extractor {
       const hext = html2hext(lca.outerHTML);
       highlightNodes(hext, html[0]);
     }
-
-    //jqel.off("click");
-    // TODO: on click of jqel, deactivate the menu
-    if (!unselect) {
-      this.openNodeMenu(e, jqel[0]);
-    }
   }
 
   deselectNode(e, el) {
@@ -281,7 +286,6 @@ class Extractor {
   }
 
   iframeLoaded(e) {
-    console.log("iframe loaded!");
     $(constants.docLoadingId).hide();
 
     const that = this;
@@ -310,7 +314,6 @@ class Extractor {
     const current = this.documents[this.docIx];
     const iframe = document.createElement('iframe');
     // TODO: add a hook to show a "loading" mask over iframe
-    console.log("Loading iframe...");
     $(constants.docLoadingId).show();
     iframe.onload = this.iframeLoaded.bind(this);
     iframe.sandbox = "allow-same-origin";

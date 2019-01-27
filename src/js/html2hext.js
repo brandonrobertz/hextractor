@@ -30,24 +30,23 @@ const html2hext = (html) => {
    */
   let colN = 1;
   const transform = (node) => {
-    if (!node) {
-      console.error("No node", node);
-      return;
-    }
-    window.N = node;
+    if (!node) return console.error("Node missing.");
+
     // build selector
     let selectors = [];
     if (node.classList.contains(constants.selectedClass)) {
-      selectors.push(`@text:CONTENT-${colN++}`);
+      const customLabel = node.getAttribute(constants.labelAttr);
+      const label = customLabel || `CONTENT-${colN++}`;
+      selectors.push(`@text:${label}`);
       switch (node.tagName) {
         case "IMG":
           if (node.getAttribute("src")) {
-            selectors.push(`src:CONTENT-${colN++}`);
+            selectors.push(`src:${label}-image-link`);
           }
           break;
         case "A":
           if (node.getAttribute("href")) {
-            selectors.push(`href:CONTENT-${colN++}`);
+            selectors.push(`href:${label}-link`);
           }
           break;
         default:
@@ -57,13 +56,18 @@ const html2hext = (html) => {
 
     const selectorStr = selectors.join(" ");
 
+    /*
     // remove attributes
     for (let i in node.attributes) {
-      if (node.hasOwnProperty(i)) {
+      // TODO: use the classes in the construction of hext templates so
+      // that means we can't remove them here. in fact we don't really
+      // need to do this here at all for now
+      if (node.hasOwnProperty(i) && i !== constants.labelAttr) {
         const name = node.attributes[i].name;
         node.removeAttribute(name);
       }
     }
+    */
 
     let children = node.children;
     if (children.length === 0) {
