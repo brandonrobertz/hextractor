@@ -38,6 +38,12 @@ const constants = {
   // selected item menu
   selectedMenu: "#autoscrape-selected-menu",
 
+  // selected element dropdown menu controls
+  menuLabel: "input#autoscrape-column-name",
+  menuSave: "#autoscrape-save",
+  menuOptional: "#autoscrape-optional",
+  menuRemove: "#autoscrape-remove",
+
   // style to inject into iframe for rendering the
   // display of selected items, etc
   autoScrapeStyles: `

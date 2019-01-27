@@ -8,28 +8,12 @@
   "html_output": true,
   "parameters": [
     {
-      "name": "HTML Column",
-      "id_name" : "html_column",
-      "type": "column",
-      "default": "html"
-    },
-    {
-      "name": "Name Column",
-      "id_name" : "name_column",
-      "type": "column",
-      "default": "url"
-    },
-    {
-      "name": "CSS Column",
-      "id_name" : "css_column",
-      "type": "column",
-      "default": "css"
-    },
-    {
       "name": "Hext template",
-      "placeholder": "Use tool on right and paste template here...",
+      "placeholder": "Use tool on right to fill this field...",
       "id_name": "hext_template",
-      "type": "string"
+      "default": "",
+      "type": "string",
+      "multiline": true
     }
   ]
 }

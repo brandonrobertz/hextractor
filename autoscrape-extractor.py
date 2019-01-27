@@ -57,9 +57,9 @@ def extract_and_flatten(table, template, html_column="html"):
 def render(table, params):
     # TODO: allow users to select the source HTML column
     template = params.get("hext_template")
-    html_column = params.get("html_column")
-    css_column = params.get("css_column")
-    name_column = params.get("name_column")
+    html_column = params.get("html_column", "html")
+    css_column = params.get("css_column", "css")
+    name_column = params.get("name_column", "url")
     has_template = True if template else False
 
     if not html_column or not css_column:
@@ -70,13 +70,15 @@ def render(table, params):
             "Use the extractor UI on the right. Then copy and "
             "paste the Hext template to the input box below."
         )
-        csss = table[css_column].tolist()
+        # csss = table[css_column].tolist()
         htmls = table[html_column].tolist()
         names = table[name_column].tolist()
-        cleaned = [ clean_html(html) for html in htmls ]
-        N = len(cleaned)
+        # cleaned = [ clean_html(html) for html in htmls ]
+        N = len(names)
         data = [{
-            "html": htmls[i], "css": csss[i], "name": names[i]
+            "html": htmls[i],
+            # "css": csss[i],
+            "name": names[i]
         } for i in range(N)]
         return (table, err_msg, {"data": data})
 

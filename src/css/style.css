@@ -168,3 +168,16 @@ span {
   padding: 5px;
   z-index: 99999;
 }
+
+#autoscrape-selected-menu .autoscrape-help {
+  width: 12px;
+  height: 16px;
+  color: white;
+  background-color: #268BD2;
+  border-radius: 12px;
+  display: inline-block;
+  padding-left: 5px;
+  padding-top: 2px;
+  text-decoration: none;
+  font-weight: bold;
+}

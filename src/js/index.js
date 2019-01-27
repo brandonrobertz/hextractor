@@ -158,20 +158,20 @@ class Extractor {
       return findBody(thisEl.parentNode);
     })(el);
 
-    const saveBtn = menu.find("#autoscrape-save");
+    const saveBtn = menu.find(constants.menuSave);
     saveBtn.on("click", () => {
-      const label = $("input#autoscrape-column-name").val();
+      const label = $(constants.menuLabel).val();
       $(el).attr(constants.labelAttr, label);
       this.closeNodeMenu(el);
       this.performLCA();
     });
-    const removeBtn = menu.find("#autoscrape-remove");
+    const removeBtn = menu.find(constants.menuRemove);
     removeBtn.on("click", () => {
       $(el).removeClass(constants.selectedClass);
       this.deselectNode(e, el);
       this.closeNodeMenu(el);
     });
-    const optionalBtn = menu.find("#autoscrape-optional");
+    const optionalBtn = menu.find(constants.menuOptional);
     optionalBtn.on("click", () => {
       this.makeNodeOptional(el);
     });
@@ -193,17 +193,18 @@ class Extractor {
       left: pos[0] - 6
     });
     $(constants.selectedMenu).show();
+    $(constants.menuLabel).focus();
   }
 
   closeNodeMenu() {
     const menu = $(constants.selectedMenu);
-    const saveBtn = menu.find("#autoscrape-save");
+    const saveBtn = menu.find(constants.menuSave);
     saveBtn.off("click");
-    const removeBtn = menu.find("#autoscrape-remove");
+    const removeBtn = menu.find(constants.menuRemove);
     removeBtn.off("click");
-    const optionalBtn = menu.find("#autoscrape-optional");
+    const optionalBtn = menu.find(constants.menuOptional);
     optionalBtn.off("click");
-    $("#autoscrape-column-name").val("");
+    $(constants.menuLabel).val("");
     $(constants.selectedMenu).hide();
   }
 
