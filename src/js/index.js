@@ -45,7 +45,10 @@ class Extractor {
       const htmlAndCSS = {};
       results.forEach(result => {
         const matches = result.name.match(/(.*)\.([^\.]{3,})$/);
-        const extension = matches[2];
+        let extension = matches[2];
+        if (extension !== "css") {
+          extension = "html";
+        }
         let filename = result.name;
         // AutoScrape saves CSS as [path].html.css
         if (result.name.endsWith(".css")) {

@@ -2,11 +2,54 @@ import { getFilesFromDataTransferItems } from 'datatransfer-files-promise';
 
 import JSZip from 'jszip';
 
+const TEXT_EXTENSIONS = [
+  "\.asp$",
+  "\.aspx$",
+  "\.axd$",
+  "\.asx$",
+  "\.asmx$",
+  "\.ashx$",
+  "\.css$",
+  "\.cfm$",
+  "\.yaws$",
+  "\.html$",
+  "\.htm$",
+  "\.xhtml$",
+  "\.jhtml$",
+  "\.hta$",
+  "\.jsp$",
+  "\.jspx$",
+  "\.wss$",
+  "\.do$",
+  "\.action$",
+  "\.pl$",
+  "\.php$",
+  "\.php4$",
+  "\.php3$",
+  "\.phtml$",
+  "\.rb$",
+  "\.rhtml$",
+  "\.shtml$",
+  "\.xml$",
+  "\.rss$",
+  "\.svg$",
+  "\.cgi$",
+  "\.dll$",
+  "\.axd$",
+  "\.asx$",
+  "\.asmx$",
+  "\.ashx$",
+  "\.aspx$",
+  "\.xml$",
+  "\.rss$",
+  "\.atom$",
+]
 
 const checkWebExtension = (name) => {
   // AutoScrape directory files will always have an extension
   // TODO: handle other HTML-like non-.html extensions (e.g., .php)
-  if (name.endsWith(".html") || name.endsWith(".css")) {
+  const re = RegExp(TEXT_EXTENSIONS.join("|"))
+  if (name.match(re)) {
     return true;
   }
   return false;
@@ -39,7 +82,9 @@ const readFiles = (files) => {
 
     promises.push(p);
   }
-  return Promise.all(promises);
+  return Promise.all(promises).catch(e => {
+    console.error("Error reding files", e);
+  });
 };
 
 export const fromDirectoryDrop = (event) => {
@@ -70,6 +115,8 @@ export const fromZipSelect = (event) => {
               name: name,
               data: data
             };
+          }).catch(e => {
+            console.error("Error decompressing", e);
           });
 
         promises.push(p);
