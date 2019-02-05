@@ -34,10 +34,14 @@ class Extractor {
     // directory drop event
     if (event.dataTransfer)
       loader = fromDirectoryDrop(event);
-    else if (event.target.outerHTML.match("director-melector"))
+    else if (event.target.outerHTML.match("directory-selector"))
       loader = fromDirectorySelect(event);
     else if (event.target.outerHTML.match("zip-selector"))
       loader = fromZipSelect(event);
+    else {
+      console.error("No loader for event", event);
+      return;
+    }
 
     loader.then(results => {
       // group HTML and CSS documents together under the
