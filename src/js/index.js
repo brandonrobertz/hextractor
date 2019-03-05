@@ -20,6 +20,7 @@ class Extractor {
     this.LCA = null;
     this.docIx = 0;
     this.selectedEls = [];
+    this.selectedEvents = [];
     // by default assume we're living inside a workbench module
     // turn this off to disable API functionality
     this.workbench = true;
@@ -126,6 +127,9 @@ class Extractor {
     $(constants.completeSelectionId).on(
       "click", this.selectionComplete.bind(this)
     );
+    $(constants.cancelSelectionId).on(
+      "click", this.selectionCancel.bind(this)
+    );
 
     this.LCA = null;
     this.docIx = 0;
@@ -169,14 +173,14 @@ class Extractor {
     saveBtn.on("click", () => {
       const label = $(constants.menuLabel).val();
       $(el).attr(constants.labelAttr, label);
-      this.closeNodeMenu(el);
+      this.closeNodeMenu();
       this.performLCA();
     });
     const cancelBtn = menu.find(constants.menuCancel);
     cancelBtn.on("click", () => {
       $(el).removeClass(constants.selectedClass);
       this.deselectNode(e, el);
-      this.closeNodeMenu(el);
+      this.closeNodeMenu();
     });
     const optionalBtn = menu.find(constants.menuOptional);
     optionalBtn.on("click", () => {
@@ -188,7 +192,7 @@ class Extractor {
     // and 2) hide it when the menu is outside of
     // the iframe
     $("iframe").contents().scroll((el) => {
-      this.closeNodeMenu(el);
+      this.closeNodeMenu();
     });
 
     // show it last
@@ -218,19 +222,19 @@ class Extractor {
   }
 
   deselectNode(e, el) {
-    this.selectNode(e, true);
+    this.selectNode(e, el, true);
   }
 
-  selectNode(e, deselect=false) {
+  selectNode(e, el, deselect=false) {
     // don't propogate click upwards
     e.preventDefault()
     e.stopPropagation();
     this.closeNodeMenu();
 
     const all = this.allDocNodes();
-    const jqel = $(e.target);
+    const jqel = $(el);
 
-    const selElIx = this.selectedEls.indexOf(e.target);
+    const selElIx = this.selectedEls.indexOf(el);
     const unselect = deselect || selElIx > -1;
 
     if (!unselect)
@@ -239,13 +243,15 @@ class Extractor {
     // add to selected
     if(!unselect) {
       jqel.addClass(constants.selectedClass);
-      this.selectedEls.push(e.target);
+      this.selectedEls.push(el);
+      this.selectedEvents.push(e);
     }
     else {
       jqel.removeClass(constants.selectedClass);
       jqel.removeClass(constants.optionalClass);
       jqel.removeAttr(constants.labelAttr);
       this.selectedEls.splice(selElIx, 1);
+      this.selectedEvents.splice(selElIx, 1);
       this.closeNodeMenu();
     }
 
@@ -312,7 +318,7 @@ class Extractor {
     });
 
     all.on("click", (e) => {
-      that.selectNode(e);
+      that.selectNode(e, e.target);
     });
   };
 
@@ -360,6 +366,26 @@ class Extractor {
     }
   }
 
+  /**
+   * Restart the current page selection state.
+   */
+  selectionCancel() {
+    this.selectedEls.forEach((_, i) => {
+      const e = this.selectedEls[i];
+      const el = this.selectedEvents[i];
+      this.deselectNode(el, e);
+    });
+    this.closeNodeMenu();
+    this.selectedEvents = [];
+    this.selectedEls = [];
+    this.LCA = null;
+    this.performLCA();
+  }
+
+  /**
+   * We're done selecting nodes. Now create Hext and
+   * dispatch.
+   */
   selectionComplete() {
     this.stopSelection();
     const hext = html2hext(this.LCA.replace("\n", "").trim());
