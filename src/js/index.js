@@ -172,8 +172,8 @@ class Extractor {
       this.closeNodeMenu(el);
       this.performLCA();
     });
-    const removeBtn = menu.find(constants.menuRemove);
-    removeBtn.on("click", () => {
+    const cancelBtn = menu.find(constants.menuCancel);
+    cancelBtn.on("click", () => {
       $(el).removeClass(constants.selectedClass);
       this.deselectNode(e, el);
       this.closeNodeMenu(el);
@@ -211,8 +211,14 @@ class Extractor {
     removeBtn.off("click");
     const optionalBtn = menu.find(constants.menuOptional);
     optionalBtn.off("click");
+    const cancelBtn = menu.find(constants.menuCancel);
+    cancelBtn.off("click");
     $(constants.menuLabel).val("");
     $(constants.selectedMenu).hide();
+  }
+
+  deselectNode(e, el) {
+    this.selectNode(e, true);
   }
 
   selectNode(e, deselect=false) {
@@ -280,10 +286,6 @@ class Extractor {
       const hext = html2hext(lca.outerHTML);
       highlightNodes(hext, html[0]);
     }
-  }
-
-  deselectNode(e, el) {
-    this.selectNode(e, true);
   }
 
   allDocNodes() {

@@ -43,6 +43,7 @@ const constants = {
   menuSave: "#autoscrape-save",
   menuOptional: "#autoscrape-optional",
   menuRemove: "#autoscrape-remove",
+  menuCancel: "#autoscrape-cancel",
 
   // style to inject into iframe for rendering the
   // display of selected items, etc
