@@ -8,12 +8,22 @@
   "html_output": true,
   "parameters": [
     {
-      "name": "Hext template",
+      "name": "Show extractor template",
+      "id_name": "show_hext_template",
+      "default": false,
+      "type": "checkbox"
+    },
+    {
+      "name": "Extractor template",
       "placeholder": "Use tool on right to fill this field...",
       "id_name": "hext_template",
       "default": "",
       "type": "string",
-      "multiline": true
+      "multiline": true,
+      "visible_if": {
+        "id_name": "show_hext_template",
+        "value": true
+      }
     }
   ]
 }

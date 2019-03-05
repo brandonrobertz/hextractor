@@ -67,7 +67,7 @@ def render(table, params):
 
     if not template:
         err_msg = (
-            "Use the extractor UI on the right."
+            "Use the iframe on the right to select content to scrape."
         )
         # csss = table[css_column].tolist()
         htmls = table[html_column].tolist()
