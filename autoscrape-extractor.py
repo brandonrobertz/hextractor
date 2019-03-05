@@ -67,8 +67,7 @@ def render(table, params):
 
     if not template:
         err_msg = (
-            "Use the extractor UI on the right. Then copy and "
-            "paste the Hext template to the input box below."
+            "Use the extractor UI on the right."
         )
         # csss = table[css_column].tolist()
         htmls = table[html_column].tolist()
