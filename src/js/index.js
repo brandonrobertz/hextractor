@@ -259,6 +259,8 @@ class Extractor {
     // TODO: on click of jqel, deactivate the menu
     if (!unselect) {
       this.openNodeMenu(e, jqel[0]);
+    } else {
+      this.performLCA();
     }
   }
 
