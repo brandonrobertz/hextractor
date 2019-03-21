@@ -4,6 +4,7 @@ const constants = {
   selectedParentClass: "autoscrape-selected-parent",
   overClass: "autoscrape-over",
   optionalClass: "autoscrape-optional",
+  selectLikeClass: "autoscrape-select-like",
   labelAttr: "autoscrape-column-label",
   uniqIdAttr: "autoscrape-uniq-id",
 
@@ -42,6 +43,7 @@ const constants = {
   menuLabel: "input#autoscrape-column-name",
   menuSave: "#autoscrape-save",
   menuOptional: "#autoscrape-optional",
+  menuSelectLike: "#autoscrape-select-like",
   menuRemove: "#autoscrape-remove",
   menuCancel: "#autoscrape-cancel",
 
@@ -57,7 +59,7 @@ const constants = {
 }
 .autoscrape-optional {
   background-color: #86F3FF !important;
-  box-shadow: 0px 0px 0px 2px #FF8BD2 !important;
+  box-shadow: 0px 0px 0px 5px #FF8BD2 !important;
 }
 .autoscrape-selected-parent {
   box-shadow: 0px 0px 100px 1000px rgba(0.5, 0.5, 0.5, 0.1) !important;

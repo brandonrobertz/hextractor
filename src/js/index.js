@@ -152,8 +152,21 @@ class Extractor {
     }
   }
 
-  makeNodeOptional(el) {
-    $(el).addClass(constants.optionalClass);
+  /**
+   * Check menu button (via click event) to see if it's
+   * already selected. If it is, return true, else false.
+   * This also handles the selected class on the element
+   * so users know the option is selected.
+   */
+  toggleMenuButton(event) {
+    const btn = $(event.target);
+    if (event.target.classList.contains("selected")) {
+      btn.removeClass("selected");
+      return true;
+    } else {
+      btn.addClass("selected");
+      return false;
+    }
   }
 
   /**
@@ -177,14 +190,18 @@ class Extractor {
       this.performLCA();
     });
     const cancelBtn = menu.find(constants.menuCancel);
-    cancelBtn.on("click", () => {
+    cancelBtn.on("click", (btnE) => {
       $(el).removeClass(constants.selectedClass);
       this.deselectNode(e, el);
       this.closeNodeMenu();
     });
     const optionalBtn = menu.find(constants.menuOptional);
-    optionalBtn.on("click", () => {
-      this.makeNodeOptional(el);
+    optionalBtn.on("click", (btnE) => {
+      if (!this.toggleMenuButton(btnE)) {
+        $(el).addClass(constants.optionalClass);
+      } else {
+        $(el).removeClass(constants.optionalClass);
+      }
     });
 
     // remove this menu on scroll. otherwise
