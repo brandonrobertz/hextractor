@@ -57,11 +57,12 @@ export const highlightNodes = (hext, html) => {
   tagAll(html);
   const domClone = html.cloneNode(true);
   replaceTextContent(domClone);
+  const outer = domClone.outerHTML;
   const json = Module.ccall(
     "html2json",
     "string",
     ["string", "string"],
-    [hext, domClone.outerHTML]
+    [hext, outer]
   );
 
   const parsed = JSON.parse(json);

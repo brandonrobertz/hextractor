@@ -48,6 +48,8 @@ def extract_and_flatten(table, template, html_column="html"):
             flat_rows.append(row + blank)
             continue
         for rec in json:
+            if not rec:
+                continue
             flat_rows.append(row + list(rec.values()))
 
     new_columns = table.columns.tolist() + columns

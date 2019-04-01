@@ -308,7 +308,8 @@ class Extractor {
     // show other captured nodes
     if (Module && lca) {
       const html = $("iframe").contents().find("html");
-      const hext = html2hext(lca.outerHTML);
+      const outer = lca.outerHTML;
+      const hext = html2hext(outer);
       highlightNodes(hext, html[0]);
     }
   }
