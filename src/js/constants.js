@@ -62,7 +62,8 @@ const constants = {
   box-shadow: 0px 0px 0px 5px #FF8BD2 !important;
 }
 .autoscrape-selected-parent {
-  box-shadow: 0px 0px 100px 1000px rgba(0.5, 0.5, 0.5, 0.1) !important;
+  /*box-shadow: 0px 0px 100px 1000px rgba(0.5, 0.5, 0.5, 0.1) !important;*/
+  box-shadow: 0px 0px 0px 5px darkorange !important;
 }
 .autoscrape-also-selected {
   background-color: #91DC47 !important;
