@@ -2,6 +2,10 @@ import $ from 'jquery';
 
 import constants from 'js/constants';
 
+/**
+ * Make a random ID that will, ultimately, uniquely identify
+ * an element in the DOM.
+ */
 const makeid = (n) => {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -30,6 +34,12 @@ const tagAll = (html) => {
   });
 };
 
+/**
+ * Replace the text of the DOM, on every element, with
+ * a randomly generated string. We use this to map the
+ * extractor output to the nodes where the data originates
+ * for highlighting purposes.
+ */
 const replaceTextContent = (html) => {
   const all = $(html).find("*");
   all.each(function(){
@@ -48,6 +58,10 @@ const checkAlreadySelected = (el) => {
   return el.classList.contains(constants.selectedClass);
 };
 
+/**
+ * Main entry point for highlighting nodes that will be
+ * additionally selected by the Hext extraction template.
+ */
 export const highlightNodes = (hext, html) => {
   if (!Module) {
     return console.warn("No emscripten Hext library found. " +

@@ -84,7 +84,7 @@ The code is laid out in the following manner:
     .
     ├── src
     │   ├── js
-    │   │   ├── api.js . . . . . . . Workbench API-specific code
+    │   │   ├── api.js . . . . . . . Workbench messaging (set param, resize)
     │   │   ├── html2hext.js . . . . HTML to Hext extractor building
     │   │   ├── hextHighlighting.js  Hext-specific matching highlighting
     │   │   ├── loaders.js . . . . . Code for loading/outputting ZIP files
@@ -101,4 +101,3 @@ The code is laid out in the following manner:
     ├── autoscrape-extractor.py  . . Extractor module Python code
     ├── autoscrape-extractor.json  . Extractor configuration
     └── autoscrape-extractor.html  . Bundled extractor JavaScript (don't edit!)
-

@@ -4,8 +4,18 @@ import constants from 'js/constants';
 
 const requiredAttr = "autoscrape-required";
 
+/**
+ * Take a block of HTML, contained by the Lowest Common
+ * Ancestor of a group of selected elements, and return a
+ * Hext extraction template.
+ *
+ * Note that the HTML block has been annotated by the
+ * extractor JavaScript to indicate specific things be
+ * done. For example, a node can be selected, but also be
+ * annotated to be an optional selector. Other annotations
+ * are label name.
+ */
 const html2hext = (html) => {
-  console.log("HTML", html);
   const parsed = $.parseHTML(html); //.cloneNode();
   if (parsed.length !== 1) {
     console.error("Cannot build a Hext template without a single root node");
@@ -92,7 +102,6 @@ const html2hext = (html) => {
   };
 
   transform(root);
-  console.log("hext", output);
   return output;
 };
 
@@ -104,7 +113,7 @@ const html2hext = (html) => {
  * fail when large swaths of the DOM end up in the Hext
  * template.
  */
-const html2hextNaive= (html) => {
+const html2hextNaive = (html) => {
   const parsed = $.parseHTML(html);
   if (parsed.length !== 1) {
     console.error("Cannot build a Hext template without a single root node");

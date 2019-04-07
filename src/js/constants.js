@@ -1,4 +1,9 @@
 const constants = {
+  // Classes for the HTML document iFrame. Adds
+  // visual indications of selected and parent elements.
+  // These also are custom attributes that the extractor
+  // generating function looks for, as cues for doing
+  // specific things when generating template.
   selectedClass: "autoscrape-selected",
   alsoSelectedClass: "autoscrape-also-selected",
   selectedParentClass: "autoscrape-selected-parent",
@@ -47,7 +52,7 @@ const constants = {
   menuRemove: "#autoscrape-remove",
   menuCancel: "#autoscrape-cancel",
 
-  // style to inject into iframe for rendering the
+  // style to inject into document iframe for rendering the
   // display of selected items, etc
   autoScrapeStyles: `
 .autoscrape-over {
@@ -62,7 +67,6 @@ const constants = {
   box-shadow: 0px 0px 0px 5px #FF8BD2 !important;
 }
 .autoscrape-selected-parent {
-  /*box-shadow: 0px 0px 100px 1000px rgba(0.5, 0.5, 0.5, 0.1) !important;*/
   box-shadow: 0px 0px 0px 5px darkorange !important;
 }
 .autoscrape-also-selected {

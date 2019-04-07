@@ -16,14 +16,20 @@ import style from 'css/style.css';
 
 class Extractor {
   constructor(documents) {
+    // Array of HTML documents that we way want to extract from
     this.documents = documents || [];
+    // Lowest common ancestor gets stored here
     this.LCA = null;
+    // Index of the curently selected HTML document
     this.docIx = 0;
+    // Elements the user has selected for extraction
     this.selectedEls = [];
+    // Events generated upon selecting an element for extraction
     this.selectedEvents = [];
     // by default assume we're living inside a workbench module
     // turn this off to disable API functionality
     this.workbench = true;
+    // the iFrame we will manage and place sandboxed HTML documents into
     this.iframe = null;
   }
 
@@ -242,6 +248,10 @@ class Extractor {
     this.selectNode(e, el, true);
   }
 
+  /**
+   * This gets fired when a user either selects or deselects
+   * (by re-selecting) an element for extraction.
+   */
   selectNode(e, el, deselect=false) {
     // don't propogate click upwards
     e.preventDefault()
@@ -281,6 +291,16 @@ class Extractor {
     }
   }
 
+  /**
+   * Given our selected elements, find the Lowest Common Ancestor, by
+   * crawling upwards through the DOM until we find the first common
+   * ancestor.
+   *
+   * If no LCA is found, we clear everything because this should only happen
+   * when the last element is deselected.
+   *
+   * This function also calls out for additional record highlighting.
+   */
   performLCA() {
     const all = this.allDocNodes();
 
@@ -314,6 +334,11 @@ class Extractor {
     }
   }
 
+  /**
+   * Return all elements inside of our document iFrame.
+   * We use this to set onclick/onhover events that dispatch
+   * out to template building functions.
+   */
   allDocNodes() {
     const doc = $("iframe");
     const contents = doc.contents();
@@ -434,6 +459,16 @@ class Extractor {
   }
 }
 
+/**
+ * ENTRY POINT
+ *
+ * We check to see if we're in a Workbench environment,
+ * otherwise we load the standalone browser workflow. Note
+ * that we check for Workbench by attempting to use the
+ * /embeddata endpoint, which ought to return paramaters
+ * (HTML documents, template if it exists) for the extractor
+ * module.
+ */
 export const startLoading = (d) => {
   const extractor = new Extractor();
   const url = String(window.location).replace(/\/output.*/, '/embeddata');
