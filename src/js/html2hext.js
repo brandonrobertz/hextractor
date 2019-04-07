@@ -67,18 +67,12 @@ const html2hext = (html) => {
     if (node.parentElement) {
       const siblings = node.parentElement.children;
       let index = -1;
-      // nth-children, in the way we're using it (<tag>:nth-child), needs
-      // to be indexed by the tag type
-      let tagIx = 1;
       for (let i = 0; i < siblings.length; ++i) {
-        const thisSib = siblings[i];
-        if (thisSib === node) {
-          index = tagIx;
-          break;
+        if (siblings[i] === node) {
+          index = i;
         }
-        if (thisSib.tagName == node.tagName) ++tagIx;
       }
-      nthChild = `:nth-child(${index})`;
+      nthChild = `:nth-child(${index + 1})`;
     }
 
     let children = node.children || [];
