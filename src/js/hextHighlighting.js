@@ -30,7 +30,6 @@ const tagAll = (html) => {
   all.each((_, el) => {
     const uid = makeid(constants.idLength);
     $(el).attr(constants.uniqIdAttr, uid);
-    //const contents = $(el).contents();
   });
 };
 

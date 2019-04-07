@@ -343,7 +343,7 @@ class Extractor {
       const html = $("iframe").contents().find("html");
       const outer = lca.outerHTML;
       const hext = html2hext(outer);
-      highlightNodes(hext, html[0]);
+      highlightNodes(hext, html[html.length - 1]);
     }
   }
 
