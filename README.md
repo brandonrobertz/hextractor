@@ -37,19 +37,20 @@ This is a basic layout of the extractor hierarchy. It consists of the following 
 3. The lowest level iFrame is sandboxed, so no JS will run inside of it, but CSS styles will be loaded if they're present.
 
 
-    +--------------------------------+
-    |            WORKBENCH           |   ^ Workbench listens for template
-    +---------+----------------------+ D |
-    | Scraper |   Extractor iFrame   | A | Sends template up to workbench
-    | Module  |      (header)        | T | Extractor template building
-    |         |                      | A | Element tracking, LCA finding
-    |---------+----------------------+   |
-    |Extractor| HTML Document iFrame | F | Renders CSS
-    | Module  |                      | L | Element events
-    |         |                      | O |   click, hover
-    |         |                      | W |
-    |         |                      |   | Data Flows Upwards
-    +---------+----------------------+
+        +--------------------------------+
+        |            WORKBENCH           |   ^ Workbench listens for template
+        +---------+----------------------+ D ^
+        | Scraper |   Extractor iFrame   | A ^ Sends template up to workbench
+        | Module  |      (header)        | T ^ Extractor template building
+        |         |                      | A ^ Element tracking, LCA finding
+        |---------+----------------------+   ^
+        |Extractor| HTML Document iFrame | F ^ Renders CSS
+        | Module  |                      | L ^ Element events
+        |         |                      | O ^   click, hover
+        |         |                      | W ^
+        |         |                      |   ^ Data Flows Upwards
+        +---------+----------------------+
+
 
 The control flow for extraction of data works like this:
 
@@ -81,6 +82,7 @@ The control flow for extraction of data works like this:
 
 The code is laid out in the following manner:
 
+
     .
     ├── src
     │   ├── js
@@ -101,3 +103,4 @@ The code is laid out in the following manner:
     ├── autoscrape-extractor.py  . . Extractor module Python code
     ├── autoscrape-extractor.json  . Extractor configuration
     └── autoscrape-extractor.html  . Bundled extractor JavaScript (don't edit!)
+
