@@ -27,7 +27,7 @@ def extract_and_flatten(table, template, html_column="html"):
     # Extract the Hext columns & JSON
     htmls = table[html_column].tolist()
     jsons = []
-    columns = None
+    columns = []
     for html in htmls:
         json = extract_json(template, html)
         jsons.append(json)

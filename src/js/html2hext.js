@@ -40,9 +40,14 @@ const html2hext = (html) => {
       return;
     }
 
+    // Check for our modifier attributes
+    const isSelected = node.classList.contains(constants.selectedClass);
+    const isOpt = node.classList.contains(constants.optionalClass);
+    const selectLike = node.classList.contains(constants.selectLikeClass);
+
     // build selector
     let selectors = [];
-    if (node.classList.contains(constants.selectedClass)) {
+    if (isSelected) {
       const customLabel = node.getAttribute(constants.labelAttr);
       const label = customLabel || `CONTENT-${colN++}`;
       selectors.push(`@text:${label}`);
@@ -64,7 +69,7 @@ const html2hext = (html) => {
 
     const selectorStr = selectors.join(" ");
     let nthChild = "";
-    if (node.parentElement) {
+    if (node.parentElement && !selectLike) {
       const siblings = node.parentElement.children;
       let index = -1;
       for (let i = 0; i < siblings.length; ++i) {
@@ -74,10 +79,12 @@ const html2hext = (html) => {
       }
       nthChild = `:nth-child(${index + 1})`;
     }
+    else if (selectLike) {
+      nthChild = ":nth-child(1n)";
+    }
 
     let children = node.children || [];
     // if user tagged this as optional, prepend tag with annotation
-    const isOpt = node.classList.contains(constants.optionalClass);
     let opt = "";
     if (isOpt || optionalPath) {
       opt =  "?";

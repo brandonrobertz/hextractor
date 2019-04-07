@@ -28,7 +28,7 @@ const makeid = (n) => {
 const tagAll = (html) => {
   const all = $(html).find("*");
   all.each((_, el) => {
-    const uid = makeid(32);
+    const uid = makeid(constants.idLength);
     $(el).attr(constants.uniqIdAttr, uid);
     const contents = $(el).contents();
   });
@@ -80,21 +80,29 @@ export const highlightNodes = (hext, html) => {
   );
 
   const parsed = JSON.parse(json);
+  const contents = $("iframe").contents();
   for (let i in parsed) {
     const row = parsed[i];
     for (let key in row) {
-      const val = row[key];
-      const contents = $("iframe").contents();
-      const elements = contents.find(`[${constants.uniqIdAttr}="${val}"]`);
-      const found = elements[elements.length-1];
-      // some text tags, like anchor links and img src won't have
-      // matches, so we just ignore for now
-      if (!found) {
-        console.warn("Skipping val", val);
-        continue;
-      }
-      if (!checkAlreadySelected(found)) {
-        $(found).addClass(constants.alsoSelectedClass);
+      const rawVal = row[key];
+      const recs = rawVal.length / constants.idLength;
+      // skip non-ID values which may slip in (-link, -src, etc)
+      if (recs % 1 != 0) continue;
+      for (let i = 0; i < recs; i++) {
+        const start = i * constants.idLength;
+        const end = (i + 1) * constants.idLength;
+        const val = rawVal.slice(start, end);
+        const elements = contents.find(`[${constants.uniqIdAttr}="${val}"]`);
+        const found = elements[elements.length-1];
+        // some text tags, like anchor links and img src won't have
+        // matches, so we just ignore for now
+        if (!found) {
+          console.warn("Skipping val", val);
+          continue;
+        }
+        if (!checkAlreadySelected(found)) {
+          $(found).addClass(constants.alsoSelectedClass);
+        }
       }
     }
   }

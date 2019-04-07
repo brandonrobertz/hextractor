@@ -5,13 +5,17 @@ const constants = {
   // generating function looks for, as cues for doing
   // specific things when generating template.
   selectedClass: "autoscrape-selected",
-  alsoSelectedClass: "autoscrape-also-selected",
   selectedParentClass: "autoscrape-selected-parent",
   overClass: "autoscrape-over",
-  optionalClass: "autoscrape-optional",
+  alsoSelectedClass: "autoscrape-also-selected",
   selectLikeClass: "autoscrape-select-like",
+  optionalClass: "autoscrape-optional",
   labelAttr: "autoscrape-column-label",
   uniqIdAttr: "autoscrape-uniq-id",
+
+  // length (in chars) of the random id used to mark HTML
+  // elements for Hext additional records highlighting
+  idLength: 32,
 
   // main wrapper where we drop the document
   docAreaId: "#autoscrape-doc-area",
@@ -62,8 +66,10 @@ const constants = {
   background-color: #86F3FF !important;
   box-shadow: 0px 0px 0px 2px #268BD2 !important;
 }
+.autoscrape-select-like {
+  box-shadow: 0px 0px 0px 5px #868B82 !important;
+}
 .autoscrape-optional {
-  background-color: #86F3FF !important;
   box-shadow: 0px 0px 0px 5px #FF8BD2 !important;
 }
 .autoscrape-selected-parent {
@@ -72,7 +78,6 @@ const constants = {
 .autoscrape-also-selected {
   background-color: #91DC47 !important;
   box-shadow: 0px 0px 0px 2px #708F1B !important;
-}
 `,
 
 }

@@ -209,6 +209,14 @@ class Extractor {
         $(el).removeClass(constants.optionalClass);
       }
     });
+    const selectLikeBtn = menu.find(constants.menuSelectLike);
+    selectLikeBtn.on("click", (btnE) => {
+      if (!this.toggleMenuButton(btnE)) {
+        $(el).addClass(constants.selectLikeClass);
+      } else {
+        $(el).removeClass(constants.selectLikeClass);
+      }
+    });
 
     // remove this menu on scroll. otherwise
     // we need to 1) move this with the window scroll
@@ -236,10 +244,12 @@ class Extractor {
     saveBtn.off("click");
     const removeBtn = menu.find(constants.menuRemove);
     removeBtn.off("click");
-    const optionalBtn = menu.find(constants.menuOptional);
-    optionalBtn.off("click");
     const cancelBtn = menu.find(constants.menuCancel);
     cancelBtn.off("click");
+    const optionalBtn = menu.find(constants.menuOptional);
+    optionalBtn.off("click");
+    const selectLikeBtn = menu.find(constants.menuSelectLike);
+    selectLikeBtn.off("click");
     $(constants.menuLabel).val("");
     $(constants.selectedMenu).hide();
   }
@@ -276,6 +286,7 @@ class Extractor {
     else {
       jqel.removeClass(constants.selectedClass);
       jqel.removeClass(constants.optionalClass);
+      jqel.removeClass(constants.selectLikeClass);
       jqel.removeAttr(constants.labelAttr);
       this.selectedEls.splice(selElIx, 1);
       this.selectedEvents.splice(selElIx, 1);
@@ -307,7 +318,6 @@ class Extractor {
     // highlight parent element if we have some nodes
     const lca = findLCA(this.selectedEls);
     all.removeClass(constants.selectedParentClass);
-    all.removeClass(constants.alsoSelectedClass);
     $(lca).addClass(constants.selectedParentClass);
 
     // this really shouldn't happen anymore. but we have
