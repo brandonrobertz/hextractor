@@ -497,7 +497,7 @@ export const startLoading = (d) => {
         resize(0);
       }
       else {
-        resize(500);
+        resize(null);
         extractor.documents = embeddata.data;
         extractor.setupSelectionMode();
         extractor.loadDocumentFrame();
