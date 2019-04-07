@@ -77,3 +77,28 @@ The control flow for extraction of data works like this:
    filled and requests the iFrame to be completely hidden, allowing room for
    the table.
 
+## Code Layout
+
+The code is laid out in the following manner:
+
+    .
+    ├── src
+    │   ├── js
+    │   │   ├── api.js . . . . . . . Workbench API-specific code
+    │   │   ├── html2hext.js . . . . HTML to Hext extractor building
+    │   │   ├── hextHighlighting.js  Hext-specific matching highlighting
+    │   │   ├── loaders.js . . . . . Code for loading/outputting ZIP files
+    │   │   ├── lca.js . . . . . . . Lowest Common Ancestor from DOM elements
+    │   │   ├── index.js . . . . . . Entry point, UI code
+    │   │   └── constants.js . . . . HTML selectors, injectable CSS
+    │   ├── css
+    │   │   └── style.css  . . . . . Style for extractor iFrame (header)
+    │   └── html
+    │       └── index.html . . . . . HTML base template for extractor iFrame
+    ├── dist
+    │   ├── index.html . . . . . . . Development-compiled HTML output
+    │   └── main.js  . . . . . . . . Bundled JS payload, copied into above
+    ├── autoscrape-extractor.py  . . Extractor module Python code
+    ├── autoscrape-extractor.json  . Extractor configuration
+    └── autoscrape-extractor.html  . Bundled extractor JavaScript (don't edit!)
+
