@@ -326,6 +326,9 @@ class Extractor {
       console.error("No LCA found! Clearing selections");
       all.removeClass(constants.selectedParentClass);
       all.removeClass(constants.selectedClass);
+      all.removeClass(constants.optionalClass);
+      all.removeClass(constants.selectLikeClass);
+      all.removeClass(constants.alsoSelectedClass);
       this.selectedEls = [];
     }
     // we have an LCA, grab the outerHTML and display the chunk

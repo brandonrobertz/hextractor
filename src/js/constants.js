@@ -72,9 +72,15 @@ const constants = {
 .autoscrape-optional {
   box-shadow: 0px 0px 0px 5px #FF8BD2 !important;
 }
+.autoscrape-selected-parent .autoscrape-selected.autoscrape-over {
+  background-color: #fa2222 !important;
+  box-shadow: 0px 0px 0px 5px #8a0000 !important;
+}
+/*
 .autoscrape-selected-parent {
   box-shadow: 0px 0px 0px 5px darkorange !important;
 }
+*/
 .autoscrape-also-selected {
   background-color: #91DC47 !important;
   box-shadow: 0px 0px 0px 2px #708F1B !important;

@@ -30,7 +30,7 @@ const tagAll = (html) => {
   all.each((_, el) => {
     const uid = makeid(constants.idLength);
     $(el).attr(constants.uniqIdAttr, uid);
-    const contents = $(el).contents();
+    //const contents = $(el).contents();
   });
 };
 
@@ -52,6 +52,11 @@ const replaceTextContent = (html) => {
   });
 };
 
+/**
+ * Check if the given node is one that we've directly
+ * selected via user click. We don't want to additonally
+ * highlight these.
+ */
 const checkAlreadySelected = (el) => {
   if (!el.classList.length)
     return false;
@@ -80,7 +85,6 @@ export const highlightNodes = (hext, html) => {
   );
 
   const parsed = JSON.parse(json);
-  const contents = $("iframe").contents();
   for (let i in parsed) {
     const row = parsed[i];
     for (let key in row) {
@@ -92,6 +96,7 @@ export const highlightNodes = (hext, html) => {
         const start = i * constants.idLength;
         const end = (i + 1) * constants.idLength;
         const val = rawVal.slice(start, end);
+        const contents = $("iframe").contents();
         const elements = contents.find(`[${constants.uniqIdAttr}="${val}"]`);
         const found = elements[elements.length-1];
         // some text tags, like anchor links and img src won't have

@@ -67,6 +67,10 @@ def render(table, params):
     if not html_column or not css_column:
         return "Select HTML & CSS source columns to extract data from."
 
+    cols = table.columns
+    if html_column not in cols or name_column not in cols:
+        return "You need to add the HTML scraper before this step."
+
     if not template:
         err_msg = (
             "Use the iframe on the right to select content to scrape."
