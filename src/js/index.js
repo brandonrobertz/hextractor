@@ -345,6 +345,8 @@ class Extractor {
       const hext = html2hext(outer);
       highlightNodes(hext, html[html.length - 1]);
     }
+
+    this.updateCompleteBtnState();
   }
 
   /**
@@ -440,11 +442,31 @@ class Extractor {
     this.performLCA();
   }
 
+  hasSelectionBeenMade() {
+    return this.LCA && this.selectedEls && this.selectedEls.length;
+  }
+
+  updateCompleteBtnState() {
+    const completeBtn = $(constants.completeSelectionId);
+    if (this.hasSelectionBeenMade()) {
+      // remove disabled from complete button
+      completeBtn.removeClass("disabled");
+    } else {
+      // add remove disabled from complete button if not there
+      completeBtn.addClass("disabled");
+    }
+  }
+
   /**
    * We're done selecting nodes. Now create Hext and
    * dispatch.
    */
   selectionComplete() {
+    // disable the selection complete if no selection made
+    if (!this.hasSelectionBeenMade()) {
+      return;
+    }
+
     this.stopSelection();
     const hext = html2hext(this.LCA.replace("\n", "").trim());
     if (this.workbench) {
