@@ -15,7 +15,7 @@
     },
     {
       "name": "",
-      "placeholder": "Use window on the select content and fill this field...",
+      "placeholder": "Use the window on the right select content and fill this field.",
       "id_name": "hext_template",
       "default": "",
       "type": "string",
