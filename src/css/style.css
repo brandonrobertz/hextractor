@@ -89,6 +89,15 @@ span {
   border: 1px solid #FC8429;
   cursor: pointer;
 }
+#autoscrape-controls button#complete-btn.disabled {
+  color: white;
+  background-color: #aaaaaa;
+  border: 1px solid #aaaaaa;
+}
+#autoscrape-controls button#complete-btn.disabled:hover {
+  border: 1px solid #555555;
+  cursor: not-allowed;
+}
 
 /*Cancel button*/
 #autoscrape-controls button#cancel-btn {
