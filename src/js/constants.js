@@ -63,8 +63,8 @@ const constants = {
   box-shadow: 0px 0px 0px 2px #FBAA6D !important;
 }
 .autoscrape-selected {
-  background-color: #86F3FF !important;
-  box-shadow: 0px 0px 0px 2px #268BD2 !important;
+  background-color: #ebf9fb !important;
+  box-shadow: 0px 0px 0px 2px #00CBE1 !important;
 }
 .autoscrape-select-like {
   box-shadow: 0px 0px 0px 5px #868B82 !important;
@@ -73,8 +73,8 @@ const constants = {
   box-shadow: 0px 0px 0px 5px #FF8BD2 !important;
 }
 .autoscrape-selected-parent .autoscrape-selected.autoscrape-over {
-  background-color: #fa2222 !important;
-  box-shadow: 0px 0px 0px 5px #8a0000 !important;
+  background-color: #fceded !important;
+  box-shadow: 0px 0px 0px 2px #E24F4A !important;
 }
 /*
 .autoscrape-selected-parent {
@@ -82,8 +82,8 @@ const constants = {
 }
 */
 .autoscrape-also-selected {
-  background-color: #91DC47 !important;
-  box-shadow: 0px 0px 0px 2px #708F1B !important;
+  background-color: #CCFFCD !important;
+  box-shadow: 0px 0px 0px 2px #6DFB71 !important;
 `,
 
 }

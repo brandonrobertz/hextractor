@@ -8,7 +8,7 @@ iframe {
   right: 0;
   width: calc(100% - 4px);
   height: calc(100% - 59px);
-  border: 2px solid #ffaad3;
+  border: 2px solid #FBAA6D;
   margin: 0 auto;
   padding: 0;
 }
@@ -69,7 +69,7 @@ span {
   height: 30px;
   font-size: 13px;
   cursor: default;
-  border: 2px solid #ffaad3;
+  border: 2px solid transparent;
   background-color: #f2f2f2;
   border-radius: 3px;
   width: 45%;
@@ -79,14 +79,15 @@ span {
 
 /*Execute button*/
 #autoscrape-controls button#complete-btn {
-  color: #44B9C6;
-  background-color: white;
-  border: 1px solid #44B9C6;
+  color: white;
+  background-color: #FBAA6D;
+  border: 1px solid #FBAA6D;
   font-size: 16px;
   width: 3.2em;
 }
 #autoscrape-controls button#complete-btn:hover {
-  background-color: #ebf9fb;
+  border: 1px solid #FC8429;
+  cursor: pointer;
 }
 
 /*Cancel button*/
@@ -163,7 +164,7 @@ span {
   font-family: sans-serif !important;
   background-color: white !important;
   border-radius: 0 0 5px 5px;
-  border: 2px solid #268BD2;
+  border: 2px solid #00CBE1;
   margin-left: -2px;
   margin-top: -1px;
   display: flex;
@@ -192,15 +193,40 @@ span {
   border-style: outset;
   border-color: transparent;
   border-radius: 3px;
+  border: 2px solid transparent;
   background-color: #eeeeee;
+}
+#autoscrape-column-name:focus {
+  border-color: #FBAA6D;
+  outline:transparent;
+}
+#autoscrape-column-name:hover {
+  border-color: rgba(0, 0, 0, 0.05);
+  outline:transparent!important;
+  cursor: pointer;
+}
+#autoscrape-column-name:hover:focus {
+  border-color: #FBAA6D;
 }
 
 #autoscrape-save, #autoscrape-cancel {
   margin-right: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+#autoscrape-save:hover, #autoscrape-cancel:hover {
+  cursor: pointer;
+  background-color: #f9f9f9;
 }
 
 #autoscrape-optional {
   background-color: transparent;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+#autoscrape-optional:hover {
+  cursor: pointer;
+  background-color: #f9f9f9;
 }
 
 #autoscrape-selected-menu button.selected {
