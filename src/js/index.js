@@ -388,6 +388,10 @@ class Extractor {
    */
   loadDocumentFrame() {
     const current = this.documents[this.docIx];
+    const iframes = document.getElementsByTagName("iframe");
+    for (var i = 0; i < iframes.length; i++) {
+      iframes[i].remove();
+    }
     const iframe = document.createElement('iframe');
     // TODO: add a hook to show a "loading" mask over iframe
     $(constants.docLoadingId).show();
