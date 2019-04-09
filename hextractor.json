@@ -1,10 +1,10 @@
 {
   "name": "Hext Extractor",
-  "id_name": "autoscrape-extractor",
+  "id_name": "hextractor",
   "category" : "Scrape",
   "icon" : "transform",
   "description" : "Extract structured data from HTML pages.",
-  "help_url":"modules/scrape/autoscrape-extractor",
+  "help_url": "modules/scrape/hextractor",
   "html_output": true,
   "parameters": [
     {

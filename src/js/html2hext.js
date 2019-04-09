@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import constants from 'js/constants';
 
-const requiredAttr = "autoscrape-required";
+const requiredAttr = "hextractor-required";
 
 /**
  * Take a block of HTML, contained by the Lowest Common

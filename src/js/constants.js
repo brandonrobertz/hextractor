@@ -4,25 +4,25 @@ const constants = {
   // These also are custom attributes that the extractor
   // generating function looks for, as cues for doing
   // specific things when generating template.
-  selectedClass: "autoscrape-selected",
-  selectedParentClass: "autoscrape-selected-parent",
-  overClass: "autoscrape-over",
-  alsoSelectedClass: "autoscrape-also-selected",
-  selectLikeClass: "autoscrape-select-like",
-  optionalClass: "autoscrape-optional",
-  labelAttr: "autoscrape-column-label",
-  uniqIdAttr: "autoscrape-uniq-id",
+  selectedClass: "hextractor-selected",
+  selectedParentClass: "hextractor-selected-parent",
+  overClass: "hextractor-over",
+  alsoSelectedClass: "hextractor-also-selected",
+  selectLikeClass: "hextractor-select-like",
+  optionalClass: "hextractor-optional",
+  labelAttr: "hextractor-column-label",
+  uniqIdAttr: "hextractor-uniq-id",
 
   // length (in chars) of the random id used to mark HTML
   // elements for Hext additional records highlighting
   idLength: 32,
 
   // main wrapper where we drop the document
-  docAreaId: "#autoscrape-doc-area",
+  docAreaId: "#hextractor-doc-area",
   docLoadingId: "#loading-shim",
 
   // controls header
-  controlAreaId: "#autoscrape-controls",
+  controlAreaId: "#hextractor-controls",
 
   // AutoScrape directory loader
   directoryLoaderId: "#directory-loader",
@@ -46,42 +46,42 @@ const constants = {
   cancelSelectionId: "#cancel-btn",
 
   // selected item menu
-  selectedMenu: "#autoscrape-selected-menu",
+  selectedMenu: "#hextractor-selected-menu",
 
   // selected element dropdown menu controls
-  menuLabel: "input#autoscrape-column-name",
-  menuSave: "#autoscrape-save",
-  menuOptional: "#autoscrape-optional",
-  menuSelectLike: "#autoscrape-select-like",
-  menuRemove: "#autoscrape-remove",
-  menuCancel: "#autoscrape-cancel",
+  menuLabel: "input#hextractor-column-name",
+  menuSave: "#hextractor-save",
+  menuOptional: "#hextractor-optional",
+  menuSelectLike: "#hextractor-select-like",
+  menuRemove: "#hextractor-remove",
+  menuCancel: "#hextractor-cancel",
 
   // style to inject into document iframe for rendering the
   // display of selected items, etc
   autoScrapeStyles: `
-.autoscrape-over {
+.hextractor-over {
   box-shadow: 0px 0px 0px 2px #FBAA6D !important;
 }
-.autoscrape-selected {
+.hextractor-selected {
   background-color: #ebf9fb !important;
   box-shadow: 0px 0px 0px 2px #00CBE1 !important;
 }
-.autoscrape-select-like {
+.hextractor-select-like {
   box-shadow: 0px 0px 0px 5px #868B82 !important;
 }
-.autoscrape-optional {
+.hextractor-optional {
   box-shadow: 0px 0px 0px 5px #FF8BD2 !important;
 }
-.autoscrape-selected-parent .autoscrape-selected.autoscrape-over {
+.hextractor-selected-parent .hextractor-selected.hextractor-over {
   background-color: #fceded !important;
   box-shadow: 0px 0px 0px 2px #E24F4A !important;
 }
 /*
-.autoscrape-selected-parent {
+.hextractor-selected-parent {
   box-shadow: 0px 0px 0px 5px darkorange !important;
 }
 */
-.autoscrape-also-selected {
+.hextractor-also-selected {
   background-color: #CCFFCD !important;
   box-shadow: 0px 0px 0px 2px #6DFB71 !important;
 `,

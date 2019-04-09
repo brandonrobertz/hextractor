@@ -13,14 +13,14 @@ iframe {
   padding: 0;
 }
 
-#autoscrape-extractor-ui {
+#hextractor-ui {
   display: flex;
   flex-flow: column;
   height: 100%;
 }
 
 /*Setting defaults styles*/
-div#autoscrape-controls {
+div#hextractor-controls {
   cursor: default;
   position: relative;
   font-family: sans-serif;
@@ -36,7 +36,7 @@ div#autoscrape-controls {
 }
 
 /*General style for button*/
-#autoscrape-controls button {
+#hextractor-controls button {
   font-size: 13px;
   cursor: pointer;
   border-radius: 30px;
@@ -47,12 +47,12 @@ div#autoscrape-controls {
   color: #48C8D7;
 
 }
-#autoscrape-controls button:hover{
+#hextractor-controls button:hover{
   background-color: #ebf9fb;
 }
 
 /*Counter*/
-#autoscrape-controls #prev-btn {
+#hextractor-controls #prev-btn {
   margin: 0 .5em;
 }
 span {
@@ -60,12 +60,12 @@ span {
   cursor: default;
   font-size: 13px;
 }
-#autoscrape-controls #next-btn {
+#hextractor-controls #next-btn {
   margin-left: .5em;
 }
 
 /*Document currently being viewed in iframe*/
-#autoscrape-controls #current-doc-name {
+#hextractor-controls #current-doc-name {
   height: 30px;
   font-size: 13px;
   cursor: default;
@@ -78,36 +78,36 @@ span {
 }
 
 /*Execute button*/
-#autoscrape-controls button#complete-btn {
+#hextractor-controls button#complete-btn {
   color: white;
   background-color: #FBAA6D;
   border: 1px solid #FBAA6D;
   font-size: 16px;
   width: 3.2em;
 }
-#autoscrape-controls button#complete-btn:hover {
+#hextractor-controls button#complete-btn:hover {
   border: 1px solid #FC8429;
   cursor: pointer;
 }
-#autoscrape-controls button#complete-btn.disabled {
+#hextractor-controls button#complete-btn.disabled {
   color: white;
   background-color: #aaaaaa;
   border: 1px solid #aaaaaa;
 }
-#autoscrape-controls button#complete-btn.disabled:hover {
+#hextractor-controls button#complete-btn.disabled:hover {
   border: 1px solid #555555;
   cursor: not-allowed;
 }
 
 /*Cancel button*/
-#autoscrape-controls button#cancel-btn {
+#hextractor-controls button#cancel-btn {
   border: 0;
   color: #555555;
   border: none;
   right: 1.5em;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
-#autoscrape-controls button#cancel-btn:hover {
+#hextractor-controls button#cancel-btn:hover {
   color: #2B2A2A;
   background: #eeeeee;
 }
@@ -169,7 +169,7 @@ span {
   margin-top: 50px;
 }
 
-#autoscrape-selected-menu {
+#hextractor-selected-menu {
   font-size: 11px !important;
   font-family: sans-serif !important;
   background-color: white !important;
@@ -184,7 +184,7 @@ span {
   z-index: 99999;
 }
 
-#autoscrape-selected-menu .autoscrape-help {
+#hextractor-selected-menu .hextractor-help {
   width: 12px;
   height: 16px;
   color: white;
@@ -197,7 +197,7 @@ span {
   font-weight: bold;
 }
 
-#autoscrape-column-name {
+#hextractor-column-name {
   margin: 0 10px 0 5px;
   margin: 0 10px 0 5px;
   border-style: outset;
@@ -206,40 +206,40 @@ span {
   border: 2px solid transparent;
   background-color: #eeeeee;
 }
-#autoscrape-column-name:focus {
+#hextractor-column-name:focus {
   border-color: #FBAA6D;
   outline:transparent;
 }
-#autoscrape-column-name:hover {
+#hextractor-column-name:hover {
   border-color: rgba(0, 0, 0, 0.05);
   outline:transparent!important;
   cursor: pointer;
 }
-#autoscrape-column-name:hover:focus {
+#hextractor-column-name:hover:focus {
   border-color: #FBAA6D;
 }
 
-#autoscrape-save, #autoscrape-cancel {
+#hextractor-save, #hextractor-cancel {
   margin-right: 10px;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
-#autoscrape-save:hover, #autoscrape-cancel:hover {
+#hextractor-save:hover, #hextractor-cancel:hover {
   cursor: pointer;
   background-color: #f9f9f9;
 }
 
-#autoscrape-optional {
+#hextractor-optional {
   background-color: transparent;
   border-radius: 3px;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
-#autoscrape-optional:hover {
+#hextractor-optional:hover {
   cursor: pointer;
   background-color: #f9f9f9;
 }
 
-#autoscrape-selected-menu button.selected {
+#hextractor-selected-menu button.selected {
   background-color: #666666;
   color: #ffffff;
   border-right-color: #000000;
