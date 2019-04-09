@@ -16,7 +16,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'AutoScrape Data Extractor',
+      title: 'hextractor',
       inlineSource: '.(js|css)$', // embed all javascript and css inline
       filename: 'index.html',
       template: 'src/html/index.html',

@@ -35,9 +35,9 @@ To build for production/Workbench, run:
 
     npm run build-prod
 
-This will update the root `autoscrape-extractor.html` file
+This will update the root `hextractor.html` file
 and will be picked up by Workbench if you are running
-Workbench's `./bin/dev develop-module autoscrape-extractor-workbench`
+Workbench's `./bin/dev develop-module hextractor`
 tool.
 
 ## Design Overview
@@ -111,7 +111,6 @@ The code is laid out in the following manner:
     ├── dist
     │   ├── index.html . . . . . . . Development-compiled HTML output
     │   └── main.js  . . . . . . . . Bundled JS payload, copied into above
-    ├── autoscrape-extractor.py  . . Extractor module Python code
-    ├── autoscrape-extractor.json  . Extractor configuration
-    └── autoscrape-extractor.html  . Bundled extractor JavaScript (don't edit!)
-
+    ├── hextractor.py  . . Extractor module Python code
+    ├── hextractor.json  . Extractor configuration
+    └── hextractor.html  . Bundled extractor JavaScript (don't edit!)
