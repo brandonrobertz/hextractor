@@ -6,10 +6,10 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --mode=development",
-    "build-prod": "webpack --mode=production && cp dist/index.html hextractor.html",
+    "build-prod": "webpack --mode=production && cp dist/index.html",
     "watch": "webpack --watch --mode=development",
     "serve": "./node_modules/http-server/bin/http-server ./dist/ -c-1",
-    "build-hext": "git submodule init && git submodule update --remote --merge && cd hext-emscripten && make && cp hext_wrapper.js ../dist/ && cp hext_wrapper.wasm ../dist/ && cd .."
+    "download-hext": "rm -f dist/hext-emscripten.js dist/hext-emscripten.wasm && wget https://github.com/html-extract/hext-emscripten/releases/download/v0.1.4/hext-emscripten.wasm -P dist/ && wget https://github.com/html-extract/hext-emscripten/releases/download/v0.1.4/hext-emscripten.js -P dist/"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "css-loader": "^2.1.0",
     "html-webpack-inline-source-plugin": "^1.0.0-beta.2",
     "html-webpack-plugin": "^4.0.0-beta.5",
-    "http-server": "^0.11.1",
+    "http-server": "^0.12.1",
     "style-loader": "^0.23.1",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"

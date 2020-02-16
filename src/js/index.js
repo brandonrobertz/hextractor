@@ -530,7 +530,8 @@ export const startLoading = (d) => {
       }
     })
     .catch(e => {
-      console.error("Failure to load embeddata from API:\n", e);
+      // not inside Workbench...
+      //console.error("Failure to load embeddata from API:\n", e);
       extractor.workbench = false;
       extractor.showDirectoryLoader();
     });
