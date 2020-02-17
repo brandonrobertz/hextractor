@@ -18,14 +18,18 @@ export const resize = (size) => {
  * module. The value is the template.
  */
 export const sendHextUpwards = (hext) => {
+  let wfModuleId = null;
+  try {
+    wfModuleId = parseInt(/(\d+)\/output/.exec(String(window.location))[1], 10);
+  } catch (e) {
+    // we're not in workbench
+  }
   window.parent.postMessage({
     from: 'outputIframe',
     type: 'set-params',
     params: {
       hext_template: hext
     },
-    wfModuleId: parseInt(/(\d+)\/output/.exec(String(window.location))[1], 10),
+    wfModuleId: wfModuleId,
   }, window.location.origin)
 };
-
-

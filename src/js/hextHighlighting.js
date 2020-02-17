@@ -76,16 +76,13 @@ export const highlightNodes = (hext, html) => {
   const domClone = html.cloneNode(true);
   replaceTextContent(domClone);
   const outer = domClone.outerHTML;
-  const json = Module.ccall(
-    "html2json",
-    "string",
-    ["string", "string"],
-    [hext, outer]
-  );
 
-  const parsed = JSON.parse(json);
-  for (let i in parsed) {
-    const row = parsed[i];
+  const parsedHtml = new Module.Html(outer);
+  const rule = new Module.Rule(hext);
+  const results = rule.extract(parsedHtml);
+
+  for (let i in results) {
+    const row = results[i];
     for (let key in row) {
       const rawVal = row[key];
       const recs = rawVal.length / constants.idLength;

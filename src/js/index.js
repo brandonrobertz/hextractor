@@ -29,6 +29,8 @@ class Extractor {
     // by default assume we're living inside a workbench module
     // turn this off to disable API functionality
     this.workbench = true;
+    // whether we're inside autoscrape www ui (send/get data with messages)
+    this.autoscrape_www = false;
     // the iFrame we will manage and place sandboxed HTML documents into
     this.iframe = null;
   }
@@ -508,8 +510,18 @@ class Extractor {
  * (HTML documents, template if it exists) for the extractor
  * module.
  */
-export const startLoading = (d) => {
+export const startLoading = (data) => {
   const extractor = new Extractor();
+  // handle data passed via postMessage from autoscrape web ui
+  if (data) {
+    // send hext template up w/ postMessage
+    extractor.workbench = true;
+    extractor.documents = data;
+    extractor.setupSelectionMode();
+    extractor.loadDocumentFrame();
+    return;
+  }
+
   const url = String(window.location).replace(/\/output.*/, '/embeddata');
   fetch(url, { credentials: 'same-origin' })
     .then((response) => {
@@ -537,6 +549,16 @@ export const startLoading = (d) => {
     });
 };
 
-window.addEventListener('hashchange', startLoading);
-startLoading();
-
+// check if we're inside autoscrape-www, if so, then
+// we want to wait for a message containing our files
+const url = String(window.location);
+if (url.match("/hextractor/hextractor.html")) {
+  window.addEventListener('message', (event) => {
+    if (!event.data || ! event.data.documents) return;
+    startLoading(event.data.documents);
+  });
+  window.parent.postMessage("waiting", '*');
+} else {
+  window.addEventListener('hashchange', startLoading);
+  startLoading();
+}
