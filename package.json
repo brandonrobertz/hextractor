@@ -9,7 +9,7 @@
     "build-prod": "webpack --mode=production && cp dist/index.html hextractor.html",
     "watch": "webpack --watch --mode=development",
     "serve": "./node_modules/http-server/bin/http-server ./dist/ -c-1",
-    "download-hext": "rm -f ./hext-emscripten.js ./hext-emscripten.wasm && wget https://github.com/html-extract/hext-emscripten/releases/download/v0.1.4/hext-emscripten.wasm -P ./ && wget https://github.com/html-extract/hext-emscripten/releases/download/v0.1.4/hext-emscripten.js -P ./"
+    "download-hext": "rm -f ./hext-emscripten.js ./hext-emscripten.wasm && wget https://github.com/html-extract/hext-emscripten/releases/download/v0.1.5/hext-emscripten.wasm -P ./ && wget https://github.com/html-extract/hext-emscripten/releases/download/v0.1.5/hext-emscripten.js -P ./"
   },
   "repository": {
     "type": "git",
