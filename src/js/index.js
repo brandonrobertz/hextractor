@@ -192,7 +192,7 @@ class Extractor {
 
     const saveBtn = menu.find(constants.menuSave);
     saveBtn.on("click", () => {
-      const label = $(constants.menuLabel).val();
+      const label = $(constants.menuLabel).val().replace(/\s+/, "_").toLowerCase();
       $(el).attr(constants.labelAttr, label);
       this.closeNodeMenu();
       this.performLCA();
