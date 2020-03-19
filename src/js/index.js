@@ -228,13 +228,18 @@ class Extractor {
       this.closeNodeMenu();
     });
 
-    // show it last
+    // show it last, make sure it doesn't overflow off screen
     const pos = this.findPos(e.target);
-    const eBox = e.target.getBoundingClientRect();
+    const menuWidth = menu.outerWidth();
+    let top = e.clientY;
+    let left = e.clientX;
+    if ((left + menuWidth) > window.innerWidth) {
+      left -= menuWidth;
+    }
     menu.css({
       position: "relative",
-      top: pos[1] + eBox.height + 50 - currentScroll,
-      left: pos[0] - 6
+      top: top,
+      left: left
     });
     $(constants.selectedMenu).show();
     $(constants.menuLabel).focus();
