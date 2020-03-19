@@ -218,6 +218,9 @@ span {
 #hextractor-column-name:hover:focus {
   border-color: #FBAA6D;
 }
+#hextractor-column-name::placeholder {
+  font-size: 10px;
+}
 
 #hextractor-save, #hextractor-cancel {
   margin-right: 10px;
