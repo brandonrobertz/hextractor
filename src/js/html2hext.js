@@ -49,7 +49,7 @@ const html2hext = (html) => {
     let selectors = [];
     if (isSelected) {
       const customLabel = node.getAttribute(constants.labelAttr);
-      const label = customLabel || `CONTENT-${colN++}`;
+      const label = customLabel || `UNLABELED-${colN++}`;
       selectors.push(`@text:${label}`);
       switch (node.tagName) {
         case "IMG":
