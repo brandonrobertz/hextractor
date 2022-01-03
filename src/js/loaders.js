@@ -1,127 +1,95 @@
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise';
 
-import JSZip from 'jszip';
-
 const TEXT_EXTENSIONS = [
-  "\.asp$",
-  "\.aspx$",
-  "\.axd$",
-  "\.asx$",
-  "\.asmx$",
-  "\.ashx$",
-  "\.css$",
-  "\.cfm$",
-  "\.yaws$",
-  "\.html$",
-  "\.htm$",
-  "\.xhtml$",
-  "\.jhtml$",
-  "\.hta$",
-  "\.jsp$",
-  "\.jspx$",
-  "\.wss$",
-  "\.do$",
-  "\.action$",
-  "\.pl$",
-  "\.php$",
-  "\.php4$",
-  "\.php3$",
-  "\.phtml$",
-  "\.rb$",
-  "\.rhtml$",
-  "\.shtml$",
-  "\.xml$",
-  "\.rss$",
-  "\.svg$",
-  "\.cgi$",
-  "\.dll$",
-  "\.axd$",
-  "\.asx$",
-  "\.asmx$",
-  "\.ashx$",
-  "\.aspx$",
-  "\.xml$",
-  "\.rss$",
-  "\.atom$",
+  ".asp",
+  ".aspx",
+  ".axd",
+  ".asx",
+  ".asmx",
+  ".ashx",
+  ".css",
+  ".cfm",
+  ".yaws",
+  ".html",
+  ".htm",
+  ".xhtml",
+  ".jhtml",
+  ".hta",
+  ".jsp",
+  ".jspx",
+  ".wss",
+  ".do",
+  ".action",
+  ".pl",
+  ".php",
+  ".php4",
+  ".php3",
+  ".phtml",
+  ".rb",
+  ".rhtml",
+  ".shtml",
+  ".xml",
+  ".rss",
+  ".svg",
+  ".cgi",
+  ".dll",
+  ".axd",
+  ".asx",
+  ".asmx",
+  ".ashx",
+  ".aspx",
+  ".xml",
+  ".rss",
+  ".atom",
 ]
 
-const checkWebExtension = (name) => {
+const isExtensionHTML = (name) => {
   // AutoScrape directory files will always have an extension
   // TODO: handle other HTML-like non-.html extensions (e.g., .php)
-  const re = RegExp(TEXT_EXTENSIONS.join("|"))
-  if (name.match(re)) {
-    return true;
-  }
-  return false;
+  const matches = TEXT_EXTENSIONS.map(
+    (ext) => name.toLowerCase().endsWith(ext)
+  ).filter((x) => x);
+  console.log("Matches", matches);
+  return matches.length > 0;
 };
 
-const readFiles = (files) => {
-  const promises = [];
+async function readFiles(files) {
+  const loadedFiles = [];
   for (let i = 0; i < files.length; ++i) {
     const file = files[i];
-    if (!checkWebExtension(file.name))
+    console.log("Considering file:", file.name, file);
+    if (!isExtensionHTML(file.name)) {
+      console.log("Skipping file", file.name);
       continue;
+    }
 
-    const p = new Promise((res, rej) => {
-      // file.filepath is an artifact of getFilesFromDataTransferItems
-      const filepath = file.filepath || file.name;
-      const start = 0;
-      const stop = file.size - 1;
-      const blob = file.slice(start, stop + 1);
-      const reader = new FileReader();
-      reader.onloadend = (e) => {
-        if (e.target.readyState == 2) { // DONE
-          res({
-            "data": e.target.result,
-            "name": filepath,
-          });
-        }
-      };
-      reader.readAsText(blob);
-    });
+    console.log("Using", file.name);
 
-    promises.push(p);
+    const loadedFile = {
+      "data": await file.text(),
+      "name": file.name,
+    };
+    console.log("Loaded", loadedFile);
+
+    loadedFiles.push(loadedFile);
   }
-  return Promise.all(promises).catch(e => {
-    console.error("Error reding files", e);
-  });
-};
 
-export const fromDirectoryDrop = (event) => {
+  return loadedFiles;
+}
+
+export async function fromDirectoryDrop(event) {
   const items = event.dataTransfer.items;
+  console.log("ITEMS", items);
   return getFilesFromDataTransferItems(items)
-    .then(files => {
-      return readFiles(files);
+    .then(async (files) => {
+      const loadedFiles = await readFiles(files);
+      console.log("loadedFiles", loadedFiles);
+      return loadedFiles;
     });
-};
+}
 
-export const fromDirectorySelect = (event) => {
-  return readFiles(event.target.files);
-};
-
-export const fromZipSelect = (event) => {
-  const file = event.target.files[0];
-  return JSZip.loadAsync(file)
-    .then(function(zip) {
-      const promises =  [];
-      zip.forEach((name, zipEntry) => {
-        if (zipEntry.dir || !checkWebExtension(name))
-          return;
-
-        const p = zip.file(name)
-          .async("string")
-          .then((data) => {
-            return {
-              name: name,
-              data: data
-            };
-          }).catch(e => {
-            console.error("Error decompressing", e);
-          });
-
-        promises.push(p);
-      });
-      return Promise.all(promises);
-    });
-};
-
+export async function fromDirectorySelect(event) {
+  const loadedFiles = await readFiles(event.target.files);
+  console.log("loadedFiles", loadedFiles);
+  return loadedFiles;
+}

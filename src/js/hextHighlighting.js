@@ -78,8 +78,10 @@ export const highlightNodes = (hext, html) => {
   const outer = domClone.outerHTML;
 
   const parsedHtml = new Module.Html(outer);
+  console.log("parsedHtml", parsedHtml);
   const rule = new Module.Rule(hext);
   const results = rule.extract(parsedHtml);
+  console.log("results", results);
 
   for (let i in results) {
     const row = results[i];

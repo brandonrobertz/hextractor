@@ -7,7 +7,7 @@ import html2hext from 'js/html2hext';
 import constants from 'js/constants';
 import { resize, sendHextUpwards } from 'js/api';
 import {
-  fromDirectoryDrop, fromDirectorySelect, fromZipSelect
+  fromDirectoryDrop, fromDirectorySelect
 } from 'js/loaders';
 import { highlightNodes } from 'js/hextHighlighting';
 
@@ -35,62 +35,63 @@ class Extractor {
     this.iframe = null;
   }
 
-  onDirectorySelected(event) {
+  async onDirectorySelected(event) {
     event.stopPropagation();
     event.preventDefault();
 
-    let loader = null;
+    let loadedFiles = [];
     // directory drop event
     if (event.dataTransfer)
-      loader = fromDirectoryDrop(event);
+      loadedFiles = await fromDirectoryDrop(event);
     else if (event.target.outerHTML.match("directory-selector"))
-      loader = fromDirectorySelect(event);
-    else if (event.target.outerHTML.match("zip-selector"))
-      loader = fromZipSelect(event);
+      loadedFiles = await fromDirectorySelect(event);
     else {
       console.error("No loader for event", event);
       return;
     }
 
-    loader.then(results => {
-      // group HTML and CSS documents together under the
-      // HTML filename's key
-      const htmlAndCSS = {};
-      results.forEach(result => {
-        const matches = result.name.match(/(.*)\.([^\.]{3,})$/);
-        let extension = matches[2];
-        if (extension !== "css") {
-          extension = "html";
-        }
-        let filename = result.name;
-        // AutoScrape saves CSS as [path].html.css
-        if (result.name.endsWith(".css")) {
-          filename = matches[1];
-        }
-        if (!htmlAndCSS[filename]) {
-          htmlAndCSS[filename] = {
-            name: filename
-          };
-        }
-        htmlAndCSS[filename][extension] = result.data;
-      });
-      // flatten into an array
-      return Object.keys(htmlAndCSS).map(name => {
-        const css = htmlAndCSS[name].css;
-        const html = htmlAndCSS[name].html;
-        return {
-          name: name,
-          css: css,
-          html: html
+    // group HTML and CSS documents together under the
+    // HTML filename's key
+    const htmlAndCSS = {};
+    loadedFiles.forEach(result => {
+      const matches = result.name.match(/(.*)\.([^\.]{3,})$/);
+      let extension = matches[2];
+      if (extension !== "css") {
+        extension = "html";
+      }
+      let filename = result.name;
+      // AutoScrape saves CSS as [path].html.css
+      const is_autoscrape_css = result.name
+        .toLowerCase()
+        .indexOf(".html.css") !== -1;
+      if (result.name.endsWith(".css") && is_autoscrape_css) {
+        filename = matches[1];
+      } else if (result.name.endsWith(".css")) {
+        filename = matches[1] + ".html";
+      }
+      console.log("Original Name", result.name, "Ext", extension, "Filename", filename);
+      if (!htmlAndCSS[filename]) {
+        htmlAndCSS[filename] = {
+          name: filename
         };
-      });
-    }).then(results => {
-      this.documents = results;
-      this.setupSelectionMode();
-      this.loadDocumentFrame();
-    }).catch(e => {
-      console.error("Data transfer error", e);
+      }
+      htmlAndCSS[filename][extension] = result.data;
     });
+
+    // flatten into an array
+    const parsedFiles = Object.keys(htmlAndCSS).map(name => {
+      const css = htmlAndCSS[name].css;
+      const html = htmlAndCSS[name].html;
+      return {
+        name: name,
+        css: css,
+        html: html
+      };
+    });
+
+    this.documents = parsedFiles;
+    this.setupSelectionMode();
+    this.loadDocumentFrame();
   }
 
   showDirectoryLoader() {
@@ -102,13 +103,12 @@ class Extractor {
       'change', this.onDirectorySelected.bind(this), false);
     dropArea.addEventListener(
       'drop', this.onDirectorySelected.bind(this), false);
-    document.querySelector(constants.zipSelectorId)
-      .addEventListener("change", this.onDirectorySelected.bind(this), false);
   }
 
   showHextTemplate(hext) {
     $(constants.hextOverlayId).show();
     $(constants.hextDisplayId).text(hext);
+    // download button action
     $(constants.hextDownloadId).on("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -279,15 +279,17 @@ class Extractor {
     const all = this.allDocNodes();
     const jqel = $(el);
 
+    // REFACTOR TODO: we can just classList.toggle instead
+    // of doing all this deselect/unselect logic
     const selElIx = this.selectedEls.indexOf(el);
     const unselect = deselect || selElIx > -1;
 
-    if (!unselect)
-      jqel.addClass(constants.selectedClass);
+    el.classList.toggle(constants.selectedClass);
+    // if (!unselect)
+    //   jqel.addClass(constants.selectedClass);
 
     // add to selected
-    if(!unselect) {
-      jqel.addClass(constants.selectedClass);
+    if(el.classList.contains(constants.selectedClass)) {
       this.selectedEls.push(el);
       this.selectedEvents.push(e);
     }
@@ -363,8 +365,10 @@ class Extractor {
    * out to template building functions.
    */
   allDocNodes() {
+    // Plain JS: const doc = document.querySelector("iframe").contentDocument;
     const doc = $("iframe");
     const contents = doc.contents();
+    // Plain JS: const all = doc.querySelectorAll("*");
     const all = contents.find("*");
     return all;
   }
@@ -396,6 +400,7 @@ class Extractor {
    */
   loadDocumentFrame() {
     const current = this.documents[this.docIx];
+    console.log("Loading", current.name);
     const iframes = document.getElementsByTagName("iframe");
     for (var i = 0; i < iframes.length; i++) {
       iframes[i].remove();

@@ -29,12 +29,8 @@
       <!--<a class="hextractor-help" href="http://help.workbenchdata.com/modules/scrape/hextractor-extract" target="_blank">?</a>-->
     </div>
     <div id="directory-loader" style="display: none;">
-      <p id="directory-instructions" >Select or drag-and-drop an AutoScrape data directory.</p>
+      <p id="directory-instructions" >Select or drag-and-drop a directory of HTML files.</p>
       <input id="directory-selector" type="file" webkitdirectory directory multiple />
-      <div id="zip-area">
-        <p>Or select an AutoScrape ZIP file.</p>
-        <input id="zip-selector" type="file" />
-      </div>
     </div>
     <div id="hext-overlay" style="display: none;">
       <p>This is the selected Hext template:</p>
@@ -52,9 +48,7 @@
         <button id="cancel-btn">Reset</button>
       </div>
     </div>
-    <script
-        type="text/javascript"
-        src="https://cdn.jsdelivr.net/gh/brandonrobertz/hextractor@master/hext-emscripten.js">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/html-extract/hext-emscripten@master/hext-emscripten.js">
     </script>
   </body>
 
