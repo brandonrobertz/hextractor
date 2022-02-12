@@ -108,5 +108,12 @@ venv.bak/
 .*.swp
 .*.swo
 
+# Temporary Files
+.DS_Store
+
 # Emscripten Hext dependencies
 hext-emscripten
+
+# misc directories
+example_data/
+images/
