@@ -120,8 +120,6 @@
         }
       }
     </style>
-
-    <script type="module" src="hextractor.js"></script>
   </head>
 
   <body>
@@ -153,6 +151,7 @@
             extraction of data from websites.
           </div>
         </div>
+
         <div id="controls">
           <form id="loader">
             <label for="page-file" class="file-loader-label">
@@ -163,24 +162,18 @@
             </label>
           </form>
           <label for="hext">
-            <textarea id="hext" rows="10"># Enter Hext template here...
-#
+            <pre id="hext"># Enter Hext template here...
+
 # You can build one automatically by clicking on text you want to extract.
-#
-# For a page with lots of posts, you'd click on the title, author, body,
-# etc, of *one* post. The resulting extractor would grab data from all
-# the posts.
-</textarea>
+
+# Here's an example extractor that will extract the link URL and text of all links on a page that contain a href attribute and whose text isn't blank
+&lt;a href @text=~/.+/ href:link @text:name /&gt;</pre>
           </label>
           <br/>
-          <textarea id="json" rows="10" readonly>JSON extracted from the webpage will appear here</textarea>
+          <pre id="json" readonly>// JSON extracted from the webpage will appear here</pre>
           <br/>
           <div class="hext-controls">
             <button id="run-hext">Extract!</button>
-            <div>
-              <button id="clear-hext">Clear Hext</button>
-              <button id="clear-results">Clear Results</button>
-            </div>
           </div>
           <div class="status-wrapper">
             <label for="status"><span>Status:</span>
@@ -191,10 +184,15 @@
         <div id="output">
         </div>
       </div>
+
       <div id="right" class="pane">
-        <iframe srcdoc="<!doctype html><html><head><style>html { font-family: sans-serif; background-color: white; }</style></head><body><p>Upload a HTML file using the file selector input on the left.<br/>You can use a browser extension like <a href='https://github.com/gildas-lormeau/SingleFile#install' target='_blank'>SingleFile</a> to turn a webpage into a single HTML file.</p></body></html>"></iframe>
+        <iframe srcdoc="<!doctype html><html><head><style>html { font-family: sans-serif; background-color: white; }</style></head><body><p>Upload a HTML file using the file selector input.<br/>You can use a browser extension like <a href='https://github.com/gildas-lormeau/SingleFile#install' target='_blank'>SingleFile</a> to turn a webpage into a single HTML file.</p></body></html>"></iframe>
         <p id="loading-webpage">Loading ...</p>
         <div id="iframe-controls">
+          <div>
+            <button id="clear-hext">Clear Selected</button>
+            <button id="clear-results">Clear Results</button>
+          </div>
           <div id="element-info">
             <span class="tag"></span>
             <span class="attrs"></span>
@@ -210,4 +208,6 @@
       </div>
     </div>
   </body>
+  <script src="src/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="hextractor.js" type="module"></script>
 </html>

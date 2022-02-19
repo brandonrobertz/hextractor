@@ -117,3 +117,4 @@ hext-emscripten
 # misc directories
 example_data/
 images/
+src/ace-full

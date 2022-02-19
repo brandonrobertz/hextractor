@@ -8,8 +8,6 @@ const html_file = document.getElementById("page-file");
 const run_button = document.getElementById("run-hext");
 const clear_button = document.getElementById("clear-results");
 const clear_hext_btn = document.getElementById("clear-hext");
-const hext_input = document.getElementById("hext");
-const json_output = document.getElementById("json");
 const status_output = document.getElementById("status");
 const hide_button = document.getElementById("hide");
 const element_tag = document.querySelector("#element-info .tag");
@@ -25,6 +23,25 @@ const LCA_STYLE = ".hext-lca { box-shadow: rgba(55, 255, 55, 0.6) 0 0 5px; } ";
 const RESULT_ROOT_STYLE = ".hext-result-root { box-shadow: rgba(139, 0, 255, 0.5) 0 0 5px; }";
 const RESULT_ITEM_STYLE = ".hext-result-item { box-shadow: rgba(255, 0, 150, 0.5) 0 0 5px; }";
 let PAD_ALL_WIDTH = 1;
+
+const hext_input = ace.edit("hext", {
+  // theme: "ace/theme/iplastic",
+  // theme: "ace/theme/textmate",
+  theme: "ace/theme/tomorrow",
+  mode: "ace/mode/hext",
+  maxLines: 10,
+  minLines: 10,
+  wrap: true,
+  autoScrollEditorIntoView: true
+});
+const json_output = ace.edit("json", {
+  theme: "ace/theme/tomorrow",
+  mode: "ace/mode/yaml",
+  maxLines: 5,
+  minLines: 1,
+  wrap: true,
+  autoScrollEditorIntoView: false
+});
 
 const uniqueCharSet = "abcdef0123456789";
 function uniqueId(n) {
@@ -72,9 +89,12 @@ function elClicked(e) {
   e.target.classList.toggle("hext-selected");
 
   const iframe = document.querySelector("iframe").contentDocument;
-  const selecteds = iframe.querySelectorAll('[hext-selected]');
+  const selecteds = [];
+  // turn into a list
+  iframe.querySelectorAll('[hext-selected]').forEach((node) => {
+    selecteds.push(node);
+  });
   const lca = findLCA(selecteds);
-  window.LCA = lca;
   iframe.querySelectorAll("[hext-lca]").forEach((el)=>{
     el.removeAttribute("hext-lca");
     el.classList.remove("hext-lca");
@@ -188,11 +208,11 @@ function elClicked(e) {
     /hext-selector="([^"]+)"/g, (a, n) => {
       if (n == rootExtractor)
         return n;
-      return `${n} hext-id:hext_id_${selId}_${++matchId}`;
+      return `${n} hext-id:hext_id_highlight`;
     }
   );
   console.log("Hext", hext);
-  hext_input.value = formatHext(hext);
+  hext_input.setValue(formatHext(hext));
 }
 
 function showElementInfo(el) {
@@ -320,6 +340,8 @@ function highlightNodes(iframe, results) {
     for (let key in result) {
       // skip non-hext and the root highlights which we already did
       if (!key.startsWith("hext_id") || key === "hext_id_root") continue;
+      // convert to array if it's not, this lets us always handle array
+      // based results (all the hext-id extractions use hext_id_highlight)
       const vals = Array.isArray(result[key]) ? result[key] : [result[key]];
       vals.forEach((selector) => {
         iframe
@@ -373,15 +395,14 @@ function formatJSON(json) {
 }
 
 async function runHext(e) {
-  json_output.value = "";
-  json_output.textContent= "";
+  json_output.setValue("");
   const iframe = document.querySelector("iframe");
   setStatus("Capturing HTML from webpage...");
   const html_src = iframe.contentDocument.documentElement.outerHTML;
   setStatus("Parsing captured HTML...");
   const html = new Html(html_src);
   setStatus("Getting hext template...");
-  const hext_src = hext_input.value;
+  const hext_src = hext_input.getValue();
   setStatus("Parsing hext template...");
   let rule = null;
   try {
@@ -393,7 +414,7 @@ async function runHext(e) {
   setStatus("Extracting JSON from HTML using template...");
   const results = rule.extract(html);
   setStatus("Writing results...");
-  json_output.value = formatJSON(results);
+  json_output.setValue(formatJSON(results));
 
   highlightNodes(iframe.contentDocument, results);
   setStatus(`Extracted ${results.length} records`);
@@ -401,7 +422,7 @@ async function runHext(e) {
 
 function clearResults() {
   unHighlightAll();
-  json_output.value = "";
+  json_output.setValue("");
 }
 
 function clearHext() {
